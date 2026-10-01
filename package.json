@@ -1,5 +1,6 @@
 {
   "name": "ardoise",
+  "version": "0.0.0",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@12.8.1",
@@ -8,13 +9,14 @@
   },
   "scripts": {
     "build": "pnpm -r build",
+    "build:types": "pnpm --filter @ardoise/types build",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
     "lint": "oxlint --type-aware",
     "lint:boundaries": "depcruise apps/management/src",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "pnpm format:check && pnpm lint && pnpm lint:boundaries && pnpm typecheck && pnpm test"
+    "check": "pnpm build:types && pnpm format:check && pnpm lint && pnpm lint:boundaries && pnpm typecheck && pnpm test"
   },
   "devDependencies": {
     "dependency-cruiser": "18.5.0",

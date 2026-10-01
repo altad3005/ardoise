@@ -2,7 +2,7 @@
 
 > UE Projet d'intégration de développement — EAFC Namur-Cadets — 2026-2027
 > Auteur : Alex Tadino — Chargé de cours : Yolan Fery
-> Version : **1.9** — octobre 2026
+> Version : **1.10** — octobre 2026
 > Justifications des choix structurants et versions de l'outillage : `annexe-justifications.md`.
 > Architecture à deux services : **Identités et organisations**, et **Gestion**, ce dernier contenant les modules **Bar**, **Trésorerie** et **Répertoire**. Le principe des deux services a été validé par le chargé de cours le 24/09/2026 ; le déplacement de l'ardoise dans le module Bar date du 27/09/2026. Voir 9.2, 9.4 et l'annexe §3.
 
@@ -20,6 +20,7 @@
 | 1.7 | 27/09/2026 | **L'ardoise devient un objet du module Bar** : plus aucune transaction transverse sur le chemin critique de la caisse. Module **Répertoire** pour les tiers partagés. Module Stock renommé **Bar**. Lien Gestion → Identité renforcé (résolution des membres côté serveur). Trois schémas PostgreSQL. |
 | 1.8 | 01/10/2026 | Versions et compatibilités revérifiées (10.6) : Node 26 LTS, TypeScript 6 épinglé (la 7 casse `nest build`), Prisma 7.10.0 épinglée sur les deux paquets, Vite 8 / Vitest 5 / React 19 / Tailwind 4. |
 | 1.9 | 01/10/2026 | Nommage du code en anglais (10.7) : services, modules, schémas PostgreSQL, routes, rôles et façades. Le document garde les termes métier français. |
+| 1.10 | 01/10/2026 | Correction après création du squelette : le modèle NestJS 12 compile avec `tsc`, pas avec Rspack (10.1, 10.6). |
 
 ---
 
@@ -1025,7 +1026,7 @@ La règle « aucun module ne touche les tables de l'autre » ne doit pas reposer
 | Couche | Choix | Justification |
 |---|---|---|
 | Langage et exécution | **TypeScript 6** (épinglé), **Node.js 26 LTS**, modules **ESM** | Un seul langage de bout en bout, types partagés entre services et interface. Node 26 devient la LTS active le 28/10/2026, le jour où Node 24 passe en maintenance ; Vitest 5 n'accepte d'ailleurs que Node 22.12, 24 ou ≥ 26. **TypeScript 7 est écarté pour l'instant** : il ne publie pas d'API programmatique de compilation, dont `nest build` et le plugin Swagger ont besoin (10.6). |
-| Framework applicatif | **NestJS 12**, en **modules ESM** | Architecture modulaire, injection de dépendances, guards, validation déclarative, OpenAPI généré. Ses modules portent les frontières Bar / Trésorerie / Répertoire (annexe §1). La version 12 (août 2026) génère des projets ESM avec Vitest, oxlint et Rspack : partir en CommonJS reviendrait à démarrer sur l'ancien modèle. |
+| Framework applicatif | **NestJS 12**, en **modules ESM** | Architecture modulaire, injection de dépendances, guards, validation déclarative, OpenAPI généré. Ses modules portent les frontières Bar / Trésorerie / Répertoire (annexe §1). La version 12 (août 2026) génère des projets ESM avec Vitest et oxlint, compilés par `tsc` : partir en CommonJS reviendrait à démarrer sur l'ancien modèle. |
 | Base de données | **PostgreSQL**, une base par service | Base relationnelle robuste ; ses transactions ACID rendent atomique une opération qui touche le stock et la trésorerie (section 9.4). SQL conseillé par le cours. |
 | Accès aux données et migrations | **Prisma 7** (Prisma Migrate), version épinglée | Schéma déclaratif, migrations SQL générées, versionnées et relues ; client typé ; multi-schéma pour séparer `bar`, `tresorerie` et `repertoire`. Isolé derrière des repositories (ENF-36). Prisma 8 reste en *release candidate* et sa CLI n'offre ni `migrate` ni `generate` : inadapté à un projet noté sur les migrations (annexe §4). **Les deux paquets sont épinglés explicitement** : au 01/10/2026, `prisma@latest` renvoie une RC de la 8 alors que `@prisma/client@latest` renvoie la 7 (10.6). |
 | Validation des entrées | **Zod**, via les schémas *Standard Schema* acceptés par `@Body()`, `@Query()` et `@Param()` | Un schéma unique dans le paquet partagé valide côté serveur et côté interface. `@nestjs/swagger` 12 sait les refléter dans l'OpenAPI, moyennant un convertisseur (`zod-openapi`). |
@@ -1085,7 +1086,7 @@ Versions vérifiées sur le registre npm le **01/10/2026**. Elles sont **épingl
 | Node.js | **26** (LTS active au 28/10/2026) | Node 24 passe en maintenance le 20/10/2026. Vitest 5 exige Node 22.12, 24 ou ≥ 26 ; `@prisma/client` 7 exige ≥ 20.19. |
 | `typescript` | **~6.0.3** | ⚠️ `typescript@latest` = **7.0.2**. La 7 ne publie pas d'API programmatique de compilation : `nest build`, le plugin CLI de Swagger et typescript-eslint en dépendent et cessent de fonctionner. `@nestjs/cli` 12.0.8 dépend lui-même de `typescript ~6.0.2`, et `@nestjs/swagger` 12 accepte `^5.5 \|\| ^6`. TypeScript 7 peut servir **uniquement** à un `tsc --noEmit` de vérification rapide, en plus du build. |
 | `@nestjs/core`, `@nestjs/common` | **12.1.2** | |
-| `@nestjs/cli` | **12.0.8** | Empaquetage par Rspack (`@rspack/core` 2.2.8, accepté par le CLI). |
+| `@nestjs/cli` | **12.0.8** | Compilation par `tsc` (constructeur par défaut du modèle généré). Rspack reste disponible en option, mais n'est pas utilisé. |
 | `@nestjs/swagger` | **12.0.2** | Dépend de `@standard-schema/spec` : c'est ce qui permet d'exposer des schémas Zod dans l'OpenAPI. |
 | `prisma` et `@prisma/client` | **7.10.0** toutes les deux | ⚠️ `prisma@latest` = **8.0.0-rc.19** alors que `@prisma/client@latest` = **7.10.0**. Installer sans épingler donne une CLI 8 en RC avec un client 7. |
 | `zod` | **4.6.5** | Accepté directement par `@Body()`, `@Query()` et `@Param()` (*Standard Schema*). |

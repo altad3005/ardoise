@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: ardoise
+          POSTGRES_PASSWORD: ardoise
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ardoise"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      PGPASSWORD: ardoise
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .tool-versions
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Create databases
+        run: psql -h localhost -U ardoise -f infra/postgres/create-databases.sql
+
+      - name: Apply migrations on empty databases
+        run: |
+          DATABASE_URL=postgresql://ardoise:ardoise@localhost:5432/identity pnpm --filter @ardoise/identity exec prisma migrate deploy
+          DATABASE_URL=postgresql://ardoise:ardoise@localhost:5432/management pnpm --filter @ardoise/management exec prisma migrate deploy
+
+      - name: Check formatting, lint, boundaries, types and tests
+        run: |
+          cp apps/identity/.env.example apps/identity/.env
+          cp apps/management/.env.example apps/management/.env
+          pnpm check
+
+  images:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image: [identity, management, web]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: docker/setup-buildx-action@v4
+
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: infra/docker/${{ matrix.image == 'web' && 'web' || 'service' }}.Dockerfile
+          build-args: SERVICE=${{ matrix.image }}
+          push: false
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.image }}
