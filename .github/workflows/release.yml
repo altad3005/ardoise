@@ -50,3 +50,17 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/ardoise-${{ matrix.image }}:${{ needs.release-please.outputs.version }}
             ghcr.io/${{ github.repository_owner }}/ardoise-${{ matrix.image }}:latest
           cache-from: type=gha,scope=${{ matrix.image }}
+
+  deploy:
+    needs: publish-images
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL }}
+    steps:
+      - name: Trigger deployment
+        if: env.DEPLOY_WEBHOOK_URL != ''
+        run: curl --fail --silent --show-error -X POST "$DEPLOY_WEBHOOK_URL"
+
+      - name: Skip deployment
+        if: env.DEPLOY_WEBHOOK_URL == ''
+        run: echo "::notice::DEPLOY_WEBHOOK_URL is not set, deployment skipped."

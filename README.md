@@ -63,6 +63,7 @@ infra/
   caddy/          reverse proxy et fichiers statiques
   docker/         Dockerfiles
   postgres/       initialisation des bases locales
+  production.env.example  variables de production
 docs/
   cahier-des-charges.md
   annexe-justifications.md
@@ -92,6 +93,26 @@ docker compose up -d --build                  # http://localhost:8080
 ```
 
 **Avant de committer** : `pnpm check` (formatage, lint, frontières entre modules, types, tests).
+
+## Déploiement
+
+Chaque release publie trois images sur GitHub Container Registry (`ardoise-identity`, `ardoise-management`, `ardoise-web`). La production les exécute avec `compose.prod.yaml`, sans rien reconstruire. Toute la configuration passe par des variables d'environnement : voir [`infra/production.env.example`](infra/production.env.example).
+
+**Derrière un reverse proxy** (Dokploy, Coolify, Traefik, Nginx…) : le proxy gère le domaine et le HTTPS, et transmet au service `web` sur le port 80.
+
+```bash
+docker compose -f compose.prod.yaml up -d
+```
+
+**Seul sur un serveur** : Caddy publie les ports 80 et 443 et obtient lui-même le certificat HTTPS pour `SITE_ADDRESS`.
+
+```bash
+docker compose -f compose.prod.yaml -f compose.prod.standalone.yaml up -d
+```
+
+**Déploiement automatique** : si le secret GitHub `DEPLOY_WEBHOOK_URL` est défini, le workflow de release l'appelle après avoir publié les images. La plupart des plateformes (Dokploy, Coolify, Portainer) fournissent une telle URL.
+
+Si les images sont privées, le serveur doit d'abord s'authentifier auprès de `ghcr.io` (`docker login ghcr.io`, avec un token `read:packages`).
 
 ## Documentation
 

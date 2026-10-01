@@ -1,0 +1,76 @@
+name: ardoise-prod
+
+x-app-service: &app-service
+  restart: unless-stopped
+  pull_policy: ${PULL_POLICY:-always}
+  depends_on:
+    postgres:
+      condition: service_healthy
+
+services:
+  postgres:
+    image: docker.io/library/postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ardoise
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    configs:
+      - source: create-databases
+        target: /docker-entrypoint-initdb.d/create-databases.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ardoise']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  identity:
+    <<: *app-service
+    image: ${IMAGE_REGISTRY:-ghcr.io/altad3005}/ardoise-identity:${ARDOISE_VERSION:-latest}
+    environment:
+      PORT: 3001
+      DATABASE_URL: postgresql://ardoise:${POSTGRES_PASSWORD}@postgres:5432/identity
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://localhost:3001/health || exit 1']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  management:
+    <<: *app-service
+    image: ${IMAGE_REGISTRY:-ghcr.io/altad3005}/ardoise-management:${ARDOISE_VERSION:-latest}
+    environment:
+      PORT: 3002
+      DATABASE_URL: postgresql://ardoise:${POSTGRES_PASSWORD}@postgres:5432/management
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://localhost:3002/health || exit 1']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  web:
+    image: ${IMAGE_REGISTRY:-ghcr.io/altad3005}/ardoise-web:${ARDOISE_VERSION:-latest}
+    restart: unless-stopped
+    pull_policy: ${PULL_POLICY:-always}
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:-:80}
+    volumes:
+      - caddy-data:/data
+    expose:
+      - '80'
+    depends_on:
+      identity:
+        condition: service_healthy
+      management:
+        condition: service_healthy
+
+configs:
+  create-databases:
+    content: |
+      CREATE DATABASE identity;
+      CREATE DATABASE management;
+
+volumes:
+  postgres-data:
+  caddy-data:
