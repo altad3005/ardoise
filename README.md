@@ -8,6 +8,7 @@ Pensée pour les associations tenues par des bénévoles (unités scoutes, cercl
 
 - **Caisse** : ouverture de soirée avec fixation des prix, encaissement multi-serveurs sur smartphone ou tablette, clôture avec comptage des espèces.
 - **Ardoises** : consommations mises au nom d'une personne, partageables entre plusieurs, réglées plus tard.
+- **Répertoire** : une seule liste de tiers (membres, personnes, magasins), pour voir ensemble ce qu'une personne doit et ce qu'on lui doit.
 - **Stock** : achats par ticket, coût moyen pondéré, inventaires et écarts, alertes de réapprovisionnement.
 - **Trésorerie** : comptes, projets, frais avancés, créances et dettes, résultat par projet et situation nette.
 - **Multi-associations** : chaque association ne voit que ses données ; rôles par association (administrateur, gestionnaire de stock, trésorier, serveur, lecteur).
@@ -19,20 +20,32 @@ Deux services indépendants, chacun avec sa propre base PostgreSQL et son conten
 | Service | Rôle |
 |---|---|
 | **identite** | Comptes, associations, adhésions, rôles. Émet les jetons d'accès (JWT signés par clé asymétrique). |
-| **gestion** | Monolithe modulaire : module **Stock** (catalogue, achats, soirées, ventes, inventaires) et module **Trésorerie** (comptes, projets, mouvements, créances et dettes). |
+| **gestion** | Monolithe modulaire à trois modules : **Bar** (catalogue, stock, achats, soirées, ventes, ardoises, inventaires), **Trésorerie** (exercices, comptes, projets, mouvements, créances et dettes) et **Répertoire** (personnes et magasins). |
 
 ```
 Navigateur (React) ──HTTPS──► Caddy ──► identite  [BD identité]
                                     └─► gestion   [BD gestion]
-                                          ├─ stock
-                                          └─ tresorerie
+                                          ├─ bar ──────► tresorerie
+                                          └─ repertoire ◄─┘
 ```
 
-Le service Gestion vérifie les jetons localement avec la clé publique, sans appeler Identité. Les modules Stock et Trésorerie n'accèdent jamais aux tables l'un de l'autre : le Stock appelle l'interface publique de la Trésorerie, dans la même transaction, ce qui garantit qu'une vente ou un achat n'est jamais enregistré d'un côté sans l'autre.
+- **Jetons** : Gestion vérifie les jetons localement avec la clé publique d'Identité (JWKS), sans l'appeler à chaque requête.
+- **Dépendances à sens unique** : Bar appelle Trésorerie, Bar et Trésorerie appellent Répertoire, rien ne remonte. Chaque module passe par la façade publique de l'autre, jamais par ses tables.
+- **Atomicité** : un achat ou une clôture de soirée touche le stock et l'argent dans une seule transaction ; il n'est jamais enregistré d'un côté sans l'autre.
+- **Caisse sans dépendance** : l'ardoise appartient au module Bar, donc une vente ne traverse aucune frontière de module ni aucun appel réseau.
+- **Frontière vérifiable** : un schéma PostgreSQL par module (`bar`, `tresorerie`, `repertoire`) et des règles `dependency-cruiser` en CI.
 
 ## Stack
 
-TypeScript · NestJS · PostgreSQL · Prisma · React + Vite · Docker · GitHub Actions · release-please · Caddy
+| Couche | Outils |
+|---|---|
+| Back-end | Node.js 26 · TypeScript 6 (ESM) · NestJS 12 · Zod |
+| Données | PostgreSQL · Prisma 7 (multi-schéma, Prisma Migrate) |
+| Front-end | React 19 · Vite 8 · TanStack Query & Router · Tailwind CSS 4 · client d'API généré depuis l'OpenAPI |
+| Qualité | Vitest · Supertest · oxlint · dependency-cruiser |
+| Livraison | pnpm workspaces · Docker · GitHub Actions · release-please · Caddy |
+
+Les versions exactes et les pièges de compatibilité (TypeScript 7, Prisma 8) sont détaillés dans le [cahier des charges, section 10.6](docs/cahier-des-charges.md#106-versions-retenues-et-pièges-de-compatibilité).
 
 ## Structure du dépôt
 
@@ -40,8 +53,9 @@ TypeScript · NestJS · PostgreSQL · Prisma · React + Vite · Docker · GitHub
 apps/
   identite/       service Identité
   gestion/        service Gestion
-    src/stock/
+    src/bar/
     src/tresorerie/
+    src/repertoire/
   web/            interface React
 packages/
   types/          types partagés (DTO)
@@ -51,7 +65,9 @@ docs/
 
 ## Lancer en local
 
-*À compléter avec le squelette.*
+Prérequis : Node.js 26, pnpm, Docker.
+
+*Commandes à compléter avec le squelette.*
 
 ## Documentation
 
