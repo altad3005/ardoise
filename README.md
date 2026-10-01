@@ -19,21 +19,21 @@ Deux services indépendants, chacun avec sa propre base PostgreSQL et son conten
 
 | Service | Rôle |
 |---|---|
-| **identite** | Comptes, associations, adhésions, rôles. Émet les jetons d'accès (JWT signés par clé asymétrique). |
-| **gestion** | Monolithe modulaire à trois modules : **Bar** (catalogue, stock, achats, soirées, ventes, ardoises, inventaires), **Trésorerie** (exercices, comptes, projets, mouvements, créances et dettes) et **Répertoire** (personnes et magasins). |
+| **identity** | Comptes, associations, adhésions, rôles. Émet les jetons d'accès (JWT signés par clé asymétrique). |
+| **management** | Monolithe modulaire à trois modules : **Bar** (catalogue, stock, achats, soirées, ventes, ardoises, inventaires), **Trésorerie** (exercices, comptes, projets, mouvements, créances et dettes) et **Répertoire** (personnes et magasins). |
 
 ```
-Navigateur (React) ──HTTPS──► Caddy ──► identite  [BD identité]
-                                    └─► gestion   [BD gestion]
-                                          ├─ bar ──────► tresorerie
-                                          └─ repertoire ◄─┘
+Navigateur (React) ──HTTPS──► Caddy ──► identity    [BD identité]
+                                    └─► management  [BD gestion]
+                                          ├─ bar ──────► treasury
+                                          └─ directory ◄─┘
 ```
 
 - **Jetons** : Gestion vérifie les jetons localement avec la clé publique d'Identité (JWKS), sans l'appeler à chaque requête.
 - **Dépendances à sens unique** : Bar appelle Trésorerie, Bar et Trésorerie appellent Répertoire, rien ne remonte. Chaque module passe par la façade publique de l'autre, jamais par ses tables.
 - **Atomicité** : un achat ou une clôture de soirée touche le stock et l'argent dans une seule transaction ; il n'est jamais enregistré d'un côté sans l'autre.
 - **Caisse sans dépendance** : l'ardoise appartient au module Bar, donc une vente ne traverse aucune frontière de module ni aucun appel réseau.
-- **Frontière vérifiable** : un schéma PostgreSQL par module (`bar`, `tresorerie`, `repertoire`) et des règles `dependency-cruiser` en CI.
+- **Frontière vérifiable** : un schéma PostgreSQL par module (`bar`, `treasury`, `directory`) et des règles `dependency-cruiser` en CI.
 
 ## Stack
 
@@ -51,11 +51,11 @@ Les versions exactes et les pièges de compatibilité (TypeScript 7, Prisma 8) s
 
 ```
 apps/
-  identite/       service Identité
-  gestion/        service Gestion
+  identity/       service Identité
+  management/     service Gestion
     src/bar/
-    src/tresorerie/
-    src/repertoire/
+    src/treasury/
+    src/directory/
   web/            interface React
 packages/
   types/          types partagés (DTO)
@@ -72,6 +72,7 @@ Prérequis : Node.js 26, pnpm, Docker.
 ## Documentation
 
 - [Cahier des charges](docs/cahier-des-charges.md) : règles de gestion, user stories, modèle de données, choix techniques.
+- Le code est entièrement en anglais ; la correspondance avec les termes du cahier des charges est dans sa [section 10.7](docs/cahier-des-charges.md#107-nommage-dans-le-code).
 - Documentation des API : OpenAPI, générée par chaque service.
 
 ## Contexte

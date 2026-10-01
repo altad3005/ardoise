@@ -2,7 +2,7 @@
 
 > UE Projet d'intégration de développement — EAFC Namur-Cadets — 2026-2027
 > Auteur : Alex Tadino — Chargé de cours : Yolan Fery
-> Version : **1.8** — octobre 2026
+> Version : **1.9** — octobre 2026
 > Justifications des choix structurants et versions de l'outillage : `annexe-justifications.md`.
 > Architecture à deux services : **Identités et organisations**, et **Gestion**, ce dernier contenant les modules **Bar**, **Trésorerie** et **Répertoire**. Le principe des deux services a été validé par le chargé de cours le 24/09/2026 ; le déplacement de l'ardoise dans le module Bar date du 27/09/2026. Voir 9.2, 9.4 et l'annexe §3.
 
@@ -19,6 +19,7 @@
 | 1.6 | 27/09/2026 | Maquettes exportées dans `docs/maquettes/`, justification du multi-associations, exercice libre et règle de rattachement, jalons alignés sur la remise du 03/01 et la défense orale. |
 | 1.7 | 27/09/2026 | **L'ardoise devient un objet du module Bar** : plus aucune transaction transverse sur le chemin critique de la caisse. Module **Répertoire** pour les tiers partagés. Module Stock renommé **Bar**. Lien Gestion → Identité renforcé (résolution des membres côté serveur). Trois schémas PostgreSQL. |
 | 1.8 | 01/10/2026 | Versions et compatibilités revérifiées (10.6) : Node 26 LTS, TypeScript 6 épinglé (la 7 casse `nest build`), Prisma 7.10.0 épinglée sur les deux paquets, Vite 8 / Vitest 5 / React 19 / Tailwind 4. |
+| 1.9 | 01/10/2026 | Nommage du code en anglais (10.7) : services, modules, schémas PostgreSQL, routes, rôles et façades. Le document garde les termes métier français. |
 
 ---
 
@@ -1103,6 +1104,25 @@ Versions vérifiées sur le registre npm le **01/10/2026**. Elles sont **épingl
 **Une dépendance écartée.** `nestjs-zod`, souvent conseillé pour marier Zod et NestJS, a pour peer `@nestjs/common ^10 \|\| ^11` : il ne couvre pas NestJS 12. Il est inutile ici, puisque NestJS 12 accepte les schémas *Standard Schema* nativement et que `zod-openapi` suffit pour l'OpenAPI.
 
 **Ce tableau est daté volontairement.** Il sera revérifié au moment de créer le squelette, et à nouveau avant la remise : Prisma 8 passera en version stable d'ici là, et le passage à TypeScript 7 dépendra de l'arrivée d'un constructeur compatible dans le CLI NestJS.
+
+### 10.7 Nommage dans le code
+
+Tout le code est écrit **en anglais** : dossiers, fichiers, classes, méthodes, schémas PostgreSQL, routes et valeurs d'énumération. Ce document conserve les termes métier français ; la table ci-dessous fait la correspondance.
+
+| Dans ce document | Dans le code |
+|---|---|
+| Service Identités et organisations | `identity` (`apps/identity`, route `/api/identity`) |
+| Service Gestion | `management` (`apps/management`, route `/api/management`) |
+| Module Bar | `bar` |
+| Module Trésorerie | `treasury` |
+| Module Répertoire | `directory` |
+| Schémas PostgreSQL `bar`, `tresorerie`, `repertoire` | `bar`, `treasury`, `directory` |
+| Rôles Administrateur, Gestionnaire de stock, Trésorier, Serveur, Lecteur | `ADMINISTRATOR`, `STOCK_MANAGER`, `TREASURER`, `BARTENDER`, `VIEWER` |
+| `enregistrerAchat`, `enregistrerClotureSoiree`, `enregistrerRentreeArdoise` | `recordPurchase`, `recordEveningClosing`, `recordTabPayment` |
+| `/internal/utilisateurs/noms`, `/internal/associations/:id/membres` | `/internal/users/names`, `/internal/associations/:id/members` |
+| Ardoise, soirée, tiers | `Tab`, `Evening`, `Party` |
+
+Le rôle Serveur devient `BARTENDER` et non `SERVER`, pour ne pas le confondre avec un serveur informatique.
 
 ---
 
