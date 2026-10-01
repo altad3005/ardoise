@@ -58,16 +58,39 @@ apps/
     src/directory/
   web/            interface React
 packages/
-  types/          types partagés (DTO)
+  types/          schémas Zod et types partagés
+infra/
+  caddy/          reverse proxy et fichiers statiques
+  docker/         Dockerfiles
+  postgres/       initialisation des bases locales
 docs/
   cahier-des-charges.md
 ```
 
 ## Lancer en local
 
-Prérequis : Node.js 26, pnpm, Docker.
+Prérequis : Node.js 26, pnpm 12, Docker ou Podman.
 
-*Commandes à compléter avec le squelette.*
+**Développement** (rechargement à chaud) :
+
+```bash
+pnpm install
+cp apps/identity/.env.example apps/identity/.env
+cp apps/management/.env.example apps/management/.env
+docker compose up -d postgres
+pnpm --filter @ardoise/types build
+pnpm --filter @ardoise/identity start:dev     # http://localhost:3001
+pnpm --filter @ardoise/management start:dev   # http://localhost:3002
+pnpm --filter @ardoise/web dev                # http://localhost:5173
+```
+
+**Pile complète en conteneurs**, comme en production :
+
+```bash
+docker compose up -d --build                  # http://localhost:8080
+```
+
+**Avant de committer** : `pnpm check` (formatage, lint, frontières entre modules, types, tests).
 
 ## Documentation
 

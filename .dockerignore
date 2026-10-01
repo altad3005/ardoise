@@ -1,0 +1,9 @@
+**/node_modules
+**/dist
+**/generated
+**/.env
+**/coverage
+.git
+.idea
+.vscode
+docs

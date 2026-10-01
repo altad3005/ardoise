@@ -15,5 +15,56 @@ services:
       timeout: 3s
       retries: 10
 
+  identity:
+    build:
+      context: .
+      dockerfile: infra/docker/service.Dockerfile
+      args:
+        SERVICE: identity
+    image: ardoise/identity
+    environment:
+      PORT: 3001
+      DATABASE_URL: postgresql://ardoise:ardoise@postgres:5432/identity
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://localhost:3001/health || exit 1']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  management:
+    build:
+      context: .
+      dockerfile: infra/docker/service.Dockerfile
+      args:
+        SERVICE: management
+    image: ardoise/management
+    environment:
+      PORT: 3002
+      DATABASE_URL: postgresql://ardoise:ardoise@postgres:5432/management
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://localhost:3002/health || exit 1']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: infra/docker/web.Dockerfile
+    image: ardoise/web
+    ports:
+      - '8080:80'
+    depends_on:
+      identity:
+        condition: service_healthy
+      management:
+        condition: service_healthy
+
 volumes:
   postgres-data:

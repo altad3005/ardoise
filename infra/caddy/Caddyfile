@@ -1,0 +1,20 @@
+{$SITE_ADDRESS::80} {
+	encode zstd gzip
+
+	@internal path /api/identity/internal/* /api/management/internal/*
+	respond @internal 404
+
+	handle_path /api/identity/* {
+		reverse_proxy {$IDENTITY_UPSTREAM:identity:3001}
+	}
+
+	handle_path /api/management/* {
+		reverse_proxy {$MANAGEMENT_UPSTREAM:management:3002}
+	}
+
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}
