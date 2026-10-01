@@ -11,14 +11,21 @@
     "start:prod": "node dist/main.js",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:cov": "vitest run --coverage"
+    "test:cov": "vitest run --coverage",
+    "postinstall": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy"
   },
   "dependencies": {
     "@nestjs/common": "12.1.2",
+    "@nestjs/config": "12.0.1",
     "@nestjs/core": "12.1.2",
     "@nestjs/platform-express": "12.1.2",
+    "@prisma/adapter-pg": "7.10.0",
+    "@prisma/client": "7.10.0",
     "reflect-metadata": "0.2.2",
-    "rxjs": "7.8.2"
+    "rxjs": "7.8.2",
+    "zod": "4.6.5"
   },
   "devDependencies": {
     "@nestjs/cli": "12.0.8",
@@ -28,6 +35,8 @@
     "@types/node": "26.6.3",
     "@types/supertest": "7.2.1",
     "@vitest/coverage-v8": "5.0.3",
+    "dotenv": "18.0.5",
+    "prisma": "7.10.0",
     "supertest": "7.3.0",
     "vitest": "5.0.3"
   }
