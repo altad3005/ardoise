@@ -15,9 +15,6 @@ out/
 .vite/
 *.local
 
-# TanStack Router generated route tree
-routeTree.gen.ts
-
 # Tests and coverage
 coverage/
 .vitest/
