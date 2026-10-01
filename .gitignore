@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Prisma generated client
+**/generated/prisma/
+
+# Vite
+.vite/
+*.local
+
+# TanStack Router generated route tree
+routeTree.gen.ts
+
+# Tests and coverage
+coverage/
+.vitest/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+docker-compose.override.yml
+
+# Caches
+.cache/
+.eslintcache
+.dependency-cruiser-cache/
+
+# IDE
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*~
