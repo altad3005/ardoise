@@ -65,6 +65,7 @@ infra/
   postgres/       initialisation des bases locales
 docs/
   cahier-des-charges.md
+  annexe-justifications.md
 ```
 
 ## Lancer en local
@@ -95,6 +96,7 @@ docker compose up -d --build                  # http://localhost:8080
 ## Documentation
 
 - [Cahier des charges](docs/cahier-des-charges.md) : règles de gestion, user stories, modèle de données, choix techniques.
+- [Annexe des justifications](docs/annexe-justifications.md) : pourquoi NestJS, deux services, l'ardoise dans le module Bar, Prisma 7 et le multi-associations.
 - Le code est entièrement en anglais ; la correspondance avec les termes du cahier des charges est dans sa [section 10.7](docs/cahier-des-charges.md#107-nommage-dans-le-code).
 - Documentation des API : OpenAPI, générée par chaque service.
 
