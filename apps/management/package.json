@@ -14,7 +14,8 @@
     "test:cov": "vitest run --coverage",
     "postinstall": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:deploy": "prisma migrate deploy"
+    "prisma:deploy": "prisma migrate deploy",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@nestjs/common": "12.1.2",

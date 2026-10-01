@@ -6,7 +6,21 @@
   "engines": {
     "node": ">=26.0.0 <27"
   },
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "oxlint --type-aware",
+    "lint:boundaries": "depcruise apps/management/src",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "pnpm format:check && pnpm lint && pnpm lint:boundaries && pnpm typecheck && pnpm test"
+  },
   "devDependencies": {
+    "dependency-cruiser": "18.5.0",
+    "oxlint": "1.86.0",
+    "oxlint-tsgolint": "7.0.2003",
+    "prettier": "3.9.9",
     "typescript": "~6.0.3"
   }
 }

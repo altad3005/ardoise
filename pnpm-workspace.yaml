@@ -10,3 +10,4 @@ minimumReleaseAgeExclude:
   - '@tanstack/router-generator@1.167.40'
   - '@tanstack/router-plugin@1.168.42'
   - vite@8.3.2
+  - dependency-cruiser@18.5.0

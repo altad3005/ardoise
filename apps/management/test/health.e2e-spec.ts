@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import type { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { afterAll, beforeAll, describe, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { AppModule } from '../src/app.module.js';
 
 describe('GET /health', () => {
@@ -20,10 +20,10 @@ describe('GET /health', () => {
     await app.close();
   });
 
-  it('reports the service as up', () => {
-    return request(app.getHttpServer())
-      .get('/health')
-      .expect(200)
-      .expect({ status: 'ok' });
+  it('reports the service as up', async () => {
+    const response = await request(app.getHttpServer()).get('/health');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ status: 'ok' });
   });
 });
