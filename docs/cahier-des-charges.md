@@ -2,7 +2,7 @@
 
 > UE Projet d'intégration de développement — EAFC Namur-Cadets — 2026-2027
 > Auteur : Alex Tadino — Chargé de cours : Yolan Fery
-> Version : **1.10** — octobre 2026
+> Version : **1.11** — octobre 2026
 > Justifications des choix structurants et versions de l'outillage : `annexe-justifications.md`.
 > Architecture à deux services : **Identités et organisations**, et **Gestion**, ce dernier contenant les modules **Bar**, **Trésorerie** et **Répertoire**. Le principe des deux services a été validé par le chargé de cours le 24/09/2026 ; le déplacement de l'ardoise dans le module Bar date du 27/09/2026. Voir 9.2, 9.4 et l'annexe §3.
 
@@ -21,6 +21,7 @@
 | 1.8 | 01/10/2026 | Versions et compatibilités revérifiées (10.6) : Node 26 LTS, TypeScript 6 épinglé (la 7 casse `nest build`), Prisma 7.10.0 épinglée sur les deux paquets, Vite 8 / Vitest 5 / React 19 / Tailwind 4. |
 | 1.9 | 01/10/2026 | Nommage du code en anglais (10.7) : services, modules, schémas PostgreSQL, routes, rôles et façades. Le document garde les termes métier français. |
 | 1.10 | 01/10/2026 | Correction après création du squelette : le modèle NestJS 12 compile avec `tsc`, pas avec Rspack (10.1, 10.6). |
+| 1.11 | 08/10/2026 | Planning réordonné à la demande du chargé de cours : les fonctionnalités métier (catalogue, caisse, ardoises, stock, trésorerie) passent avant les comptes, grâce à un contexte d'association de démonstration (11.2, 11.3). |
 
 ---
 
@@ -1143,16 +1144,20 @@ Le rôle Serveur devient `BARTENDER` et non `SERVER`, pour ne pas le confondre a
 |---|---|---|
 | Jusqu'au 24/09 | Cahier des charges | Cahier des charges validé ; dépôt GitHub et monorepo créés. |
 | 24/09 – 08/10 | **Squelette déployé** | Deux services vides répondant `/health` (Identité, Gestion) et l'interface, une migration initiale par base, trois images Docker publiées par la CI, application accessible en ligne en HTTPS. |
-| 08/10 – 15/10 | Identité | US-01 à 11 : comptes, mot de passe oublié, associations, adhésion, rôles. |
-| 15/10 – 05/11 | Catalogue et achats | US-12 à 19, US-20, US-21, US-24. |
-| 05/11 – 19/11 | Caisse et ardoises | US-28 à 39, US-53 ; ardoises locales au module Bar, clôture de soirée et appel transactionnel Bar → Trésorerie. |
-| 19/11 – 03/12 | Trésorerie | US-40 à 45, US-48, US-49, US-54 ; façade publique du module Trésorerie et tests de l'invariant de situation nette. |
-| 03/12 – 10/12 | Inventaires et compléments | US-22 à 27, 32, 33, 46, 47, 52 ; stories S restantes selon l'avancement. |
+| 08/10 – 22/10 | Catalogue | US-12 à 15, 17, 18 ; contexte d'association de démonstration dans le service Gestion. |
+| 22/10 – 12/11 | Caisse | US-40, 41 et 11 (comptes, projets, paramétrage : le minimum de trésorerie qu'exige une soirée), puis US-28 à 31, 34, 35 ; clôture de soirée et appel transactionnel Bar → Trésorerie. |
+| 12/11 – 19/11 | Ardoises | US-53, US-36 à 39 ; répertoire des tiers, ardoises locales au module Bar. |
+| 19/11 – 26/11 | Achats et stock | US-20 à 24. |
+| 26/11 – 03/12 | Trésorerie | US-42 à 45, 48 à 50, 54 ; façade publique du module Trésorerie et tests de l'invariant de situation nette. |
+| 03/12 – 10/12 | Comptes et associations | US-01 à 08, 10 ; le jeton JWT d'Identité remplace le contexte de démonstration. |
+| Selon l'avancement | Compléments | Stories S et C restantes : US-09, 16, 19, 25 à 27, 32, 33, 46, 47, 51, 52. |
 | 10/12 – 17/12 | Sécurité | Analyse de sécurité (OWASP Top 10), tests d'isolation entre associations, corrections. |
 | 17/12 – 03/01 | Stabilisation et livraison | Revue technique, corrections, documentation, version 1.0. **Remise du projet le 03/01 à 23 h 59**, dépôt GitHub public et application accessible en ligne. |
 | 03/01 – 14/01 | Défense orale | Préparation et présentation orale (séances des 07/01 et 14/01) : démonstration sur l'environnement déployé, justification des choix techniques (annexe). |
 
 Le déploiement est mis en place **dès la deuxième itération**, avant toute fonctionnalité métier, pour que chaque fonctionnalité soit livrée en ligne au fil de l'eau.
+
+**Ordre des jalons.** Ce qu'attend d'abord le client, ce sont les fonctionnalités de son bar : les comptes et les associations viennent donc en dernier. Les fonctionnalités métier n'ont pas besoin d'un compte, seulement d'un contexte « quelle association, quels rôles » (9.3). Jusqu'au jalon *Comptes et associations*, le service Gestion fournit ce contexte pour une **association de démonstration** dotée de tous les rôles ; chaque route déclare déjà les rôles qu'elle exige et filtre sur l'association du contexte. Le jeton émis par Identité remplace ensuite la source de ce contexte, sans modifier les routes. Au sein des jalons, l'ordre suit les dépendances entre règles : une soirée exige un projet et un compte caisse (RG-SOI-01, 03, 08), une ardoise un tiers du répertoire (RG-ARD-04), et la caisse peut précéder le stock puisqu'une vente est acceptée même si le stock devient négatif.
 
 ### 11.3 Risques
 
@@ -1162,6 +1167,8 @@ Le déploiement est mis en place **dès la deuxième itération**, avant toute f
 | Frontière entre modules non respectée en codant (jointure directe, accès aux tables de l'autre module) | L'extraction future de la Trésorerie devient impossible | Interfaces publiques explicites, aucune clé étrangère entre modules, revue de chaque pull request sur ce point. |
 | Fuite de données entre associations | Critique (sécurité) | Filtrage systématique, tests automatisés d'isolation (ENF-22). |
 | Découverte tardive des problèmes de déploiement | Blocage en fin de projet | Squelette déployé dès la deuxième itération. |
+| Authentification réelle branchée tardivement | Contrôles de rôles ou filtrage par association oubliés sur des routes déjà écrites | Contexte d'association et rôles exigés déclarés sur chaque route dès le premier jalon ; tests d'isolation au jalon Sécurité. |
+| Application en ligne sans comptes jusqu'en décembre | Données de démonstration modifiables par n'importe qui | Données sans valeur réelle ; accès protégé par un mot de passe au niveau du reverse proxy si nécessaire. |
 
 ---
 
