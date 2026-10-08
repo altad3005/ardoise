@@ -110,6 +110,11 @@ docker compose -f compose.prod.yaml up -d
 docker compose -f compose.prod.yaml -f compose.prod.standalone.yaml up -d
 ```
 
+**Adresse IP des clients** : la limitation du nombre de requêtes (inscription…) compte par adresse IP. Caddy fait confiance à l'en-tête `X-Forwarded-For` venant d'une adresse privée, c'est-à-dire du reverse proxy. Il faut donc que les services voient la vraie adresse du client :
+
+- derrière un reverse proxy, celui-ci ne doit pas faire confiance à un `X-Forwarded-For` envoyé par le client (comportement par défaut de Traefik) ; s'il est lui-même derrière un CDN (Cloudflare…), déclarer les adresses du CDN comme proxys de confiance ;
+- seul sur un serveur, Docker doit transmettre l'adresse d'origine des connexions, ce qui n'est pas le cas en mode *rootless* (Docker ou Podman) : le client paraîtrait venir d'une adresse privée et pourrait falsifier son adresse.
+
 **Déploiement automatique** : si le secret GitHub `DEPLOY_WEBHOOK_URL` est défini, le workflow de release l'appelle après avoir publié les images. La plupart des plateformes (Dokploy, Coolify, Portainer) fournissent une telle URL.
 
 Si les images sont privées, le serveur doit d'abord s'authentifier auprès de `ghcr.io` (`docker login ghcr.io`, avec un token `read:packages`).
