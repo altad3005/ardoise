@@ -8,7 +8,7 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm fetch
 COPY . .
 RUN pnpm install --offline --frozen-lockfile --filter "@ardoise/${SERVICE}..."
-RUN pnpm --filter "@ardoise/${SERVICE}" build
+RUN pnpm --filter "@ardoise/${SERVICE}..." build
 RUN pnpm --filter "@ardoise/${SERVICE}" deploy --prod --legacy /out \
  && cp -r "apps/${SERVICE}/dist" "apps/${SERVICE}/prisma" "apps/${SERVICE}/prisma.config.ts" /out/
 
