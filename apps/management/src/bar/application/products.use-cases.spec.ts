@@ -11,7 +11,7 @@ const jupiler: Product = {
   id: 'c0000000-0000-4000-8000-000000000001',
   associationId: null,
   name: 'Jupiler 25 cl',
-  category: 'BEER',
+  category: 'PILSNER',
   stockUnit: 'bouteille',
 };
 
@@ -19,7 +19,7 @@ const otherAssociationBeer: Product = {
   id: 'c0000000-0000-4000-8000-000000000099',
   associationId: 'b0000000-0000-4000-8000-000000000002',
   name: 'Bière du club 33 cl',
-  category: 'BEER',
+  category: 'PILSNER',
   stockUnit: 'bouteille',
 };
 

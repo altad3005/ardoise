@@ -2,7 +2,7 @@
 CREATE SCHEMA IF NOT EXISTS "bar";
 
 -- CreateEnum
-CREATE TYPE "bar"."ProductCategory" AS ENUM ('BEER', 'SOFT_DRINK', 'SPIRIT', 'WINE');
+CREATE TYPE "bar"."ProductCategory" AS ENUM ('PILSNER', 'SPECIALTY_BEER', 'SOFT_DRINK', 'SPIRIT', 'WINE');
 
 -- CreateTable
 CREATE TABLE "bar"."products" (
@@ -51,14 +51,14 @@ ALTER TABLE "bar"."sale_items" ADD CONSTRAINT "sale_items_product_id_fkey" FOREI
 
 -- Shared catalogue
 INSERT INTO "bar"."products" ("id", "name", "category", "stock_unit") VALUES
-  ('c0000000-0000-4000-8000-000000000001', 'Jupiler 25 cl', 'BEER', 'bouteille'),
-  ('c0000000-0000-4000-8000-000000000002', 'Stella Artois 25 cl', 'BEER', 'bouteille'),
-  ('c0000000-0000-4000-8000-000000000003', 'Leffe Blonde 33 cl', 'BEER', 'bouteille'),
-  ('c0000000-0000-4000-8000-000000000004', 'Chimay Bleue 33 cl', 'BEER', 'bouteille'),
-  ('c0000000-0000-4000-8000-000000000005', 'Duvel 33 cl', 'BEER', 'bouteille'),
-  ('c0000000-0000-4000-8000-000000000006', 'Karmeliet 33 cl', 'BEER', 'bouteille'),
-  ('c0000000-0000-4000-8000-000000000007', 'Kriek Belle-Vue 25 cl', 'BEER', 'bouteille'),
-  ('c0000000-0000-4000-8000-000000000008', 'Jupiler fût 20 L', 'BEER', 'fût'),
+  ('c0000000-0000-4000-8000-000000000001', 'Jupiler 25 cl', 'PILSNER', 'bouteille'),
+  ('c0000000-0000-4000-8000-000000000002', 'Stella Artois 25 cl', 'PILSNER', 'bouteille'),
+  ('c0000000-0000-4000-8000-000000000003', 'Leffe Blonde 33 cl', 'SPECIALTY_BEER', 'bouteille'),
+  ('c0000000-0000-4000-8000-000000000004', 'Chimay Bleue 33 cl', 'SPECIALTY_BEER', 'bouteille'),
+  ('c0000000-0000-4000-8000-000000000005', 'Duvel 33 cl', 'SPECIALTY_BEER', 'bouteille'),
+  ('c0000000-0000-4000-8000-000000000006', 'Karmeliet 33 cl', 'SPECIALTY_BEER', 'bouteille'),
+  ('c0000000-0000-4000-8000-000000000007', 'Kriek Belle-Vue 25 cl', 'SPECIALTY_BEER', 'bouteille'),
+  ('c0000000-0000-4000-8000-000000000008', 'Jupiler fût 20 L', 'PILSNER', 'fût'),
   ('c0000000-0000-4000-8000-000000000009', 'Coca-Cola 33 cl', 'SOFT_DRINK', 'canette'),
   ('c0000000-0000-4000-8000-000000000010', 'Coca-Cola Zero 33 cl', 'SOFT_DRINK', 'canette'),
   ('c0000000-0000-4000-8000-000000000011', 'Fanta 33 cl', 'SOFT_DRINK', 'canette'),

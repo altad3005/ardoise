@@ -49,7 +49,7 @@ describe('Catalogue products', () => {
     expect(products.find((product) => product.id === JUPILER)).toEqual({
       id: JUPILER,
       name: 'Jupiler 25 cl',
-      category: 'BEER',
+      category: 'PILSNER',
       stockUnit: 'bouteille',
       isShared: true,
       isActive: false,

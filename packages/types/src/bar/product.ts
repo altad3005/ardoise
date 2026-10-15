@@ -1,7 +1,13 @@
 import { z } from 'zod';
 import { idSchema } from '../common/identifier.js';
 
-export const productCategorySchema = z.enum(['BEER', 'SOFT_DRINK', 'SPIRIT', 'WINE']);
+export const productCategorySchema = z.enum([
+  'PILSNER',
+  'SPECIALTY_BEER',
+  'SOFT_DRINK',
+  'SPIRIT',
+  'WINE',
+]);
 
 export type ProductCategory = z.infer<typeof productCategorySchema>;
 
