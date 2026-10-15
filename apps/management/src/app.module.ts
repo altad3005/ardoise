@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { AssociationContextModule } from './association-context/association-context.module.js';
 import { BarModule } from './bar/bar.module.js';
 import { validateEnvironment } from './config/environment.js';
 import { DatabaseModule } from './database/database.module.js';
@@ -11,6 +12,7 @@ import { TreasuryModule } from './treasury/treasury.module.js';
   imports: [
     ConfigModule.forRoot({ isGlobal: true, validate: validateEnvironment }),
     DatabaseModule,
+    AssociationContextModule,
     HealthModule,
     BarModule,
     TreasuryModule,

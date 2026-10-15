@@ -11,7 +11,13 @@ function RootLayout() {
         <Link to="/" className="text-lg font-semibold">
           Ardoise
         </Link>
-        <Link to="/register" className="ml-auto text-sm font-medium text-stone-700 hover:underline">
+        <Link
+          to="/catalogue"
+          className="ml-auto text-sm font-medium text-stone-700 hover:underline"
+        >
+          Catalogue
+        </Link>
+        <Link to="/register" className="ml-4 text-sm font-medium text-stone-700 hover:underline">
           Créer un compte
         </Link>
       </header>
