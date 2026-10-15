@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.2.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.1.0...ardoise-v0.2.0) (2026-10-15)
+
+
+### Features
+
+* **identity:** add user registration use case ([daee27c](https://github.com/altad3005/ardoise/commit/daee27cf5fd6fb2ac656a71fbbaf6a1a26465f3b))
+* **identity:** add users table and Prisma repository ([0b5c42e](https://github.com/altad3005/ardoise/commit/0b5c42e9c32b9216e52f615bcf84f20614fd1538))
+* **identity:** expose user registration endpoint with rate limiting ([4c813c5](https://github.com/altad3005/ardoise/commit/4c813c5d5ceffe9111627795224620b2e4869c26))
+* **identity:** hash passwords with Argon2id ([fcd031a](https://github.com/altad3005/ardoise/commit/fcd031ab78f109208b772fab8b8c371958e02907))
+* **web:** add registration page ([6489340](https://github.com/altad3005/ardoise/commit/648934036240ff6c068335eb80f1fab30d10e0a7))
+
+
+### Bug Fixes
+
+* **infra:** forward the real client IP to the services ([b971148](https://github.com/altad3005/ardoise/commit/b97114811f5b3713546d67f4a9d35cefdbb25c17))
+
 ## 0.1.0 (2026-10-01)
 
 
