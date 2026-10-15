@@ -18,14 +18,14 @@ export class AssociationContextGuard implements CanActivate {
     private readonly source: AssociationContextSource,
   ) {}
 
-  canActivate(executionContext: ExecutionContext): boolean {
+  async canActivate(executionContext: ExecutionContext): Promise<boolean> {
     const targets = [executionContext.getHandler(), executionContext.getClass()];
     if (this.reflector.getAllAndOverride<boolean>(IS_PUBLIC, targets)) {
       return true;
     }
 
     const request = executionContext.switchToHttp().getRequest<ContextualRequest>();
-    const context = this.source.resolve(request);
+    const context = await this.source.resolve(request);
     if (!context) {
       throw new UnauthorizedException();
     }

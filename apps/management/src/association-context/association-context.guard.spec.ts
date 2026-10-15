@@ -22,7 +22,7 @@ class FixedContextSource extends AssociationContextSource {
     super();
   }
 
-  resolve(): AssociationContext | null {
+  async resolve(): Promise<AssociationContext | null> {
     return this.context;
   }
 }
@@ -38,39 +38,41 @@ function canActivate(
   context: AssociationContext | null,
   handler: () => void,
   request: FakeRequest = {},
-): boolean {
+): Promise<boolean> {
   const guard = new AssociationContextGuard(new Reflector(), new FixedContextSource(context));
   return guard.canActivate(new ExecutionContextHost([request], TestController, handler));
 }
 
-describe('AssociationContextGuard', () => {
-  it('lets a public route through without context', () => {
-    expect(canActivate(null, TestController.prototype.publicRoute)).toBe(true);
+describe('AssociationContextGuard', async () => {
+  it('lets a public route through without context', async () => {
+    await expect(canActivate(null, TestController.prototype.publicRoute)).resolves.toBe(true);
   });
 
-  it('rejects a request without context', () => {
-    expect(() => canActivate(null, TestController.prototype.readRoute)).toThrow(
+  it('rejects a request without context', async () => {
+    await expect(canActivate(null, TestController.prototype.readRoute)).rejects.toThrow(
       UnauthorizedException,
     );
   });
 
-  it('rejects a context without the required role', () => {
-    expect(() => canActivate(contextWith(['VIEWER']), TestController.prototype.stockRoute)).toThrow(
-      ForbiddenException,
-    );
+  it('rejects a context without the required role', async () => {
+    await expect(
+      canActivate(contextWith(['VIEWER']), TestController.prototype.stockRoute),
+    ).rejects.toThrow(ForbiddenException);
   });
 
-  it('lets an administrator through any role requirement', () => {
-    expect(canActivate(contextWith(['ADMINISTRATOR']), TestController.prototype.stockRoute)).toBe(
-      true,
-    );
+  it('lets an administrator through any role requirement', async () => {
+    await expect(
+      canActivate(contextWith(['ADMINISTRATOR']), TestController.prototype.stockRoute),
+    ).resolves.toBe(true);
   });
 
-  it('stores the context on the request when no role is required', () => {
+  it('stores the context on the request when no role is required', async () => {
     const request: FakeRequest = {};
     const context = contextWith(['VIEWER']);
 
-    expect(canActivate(context, TestController.prototype.readRoute, request)).toBe(true);
+    await expect(canActivate(context, TestController.prototype.readRoute, request)).resolves.toBe(
+      true,
+    );
     expect(request.associationContext).toBe(context);
   });
 });
