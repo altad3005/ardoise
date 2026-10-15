@@ -73,6 +73,7 @@ function CataloguePage() {
           title={categoryLabels[category]}
           products={shownProducts.filter((product) => product.category === category)}
           pendingProductId={pendingProductId}
+          isLocked={activation.isPending}
           onToggle={(product) =>
             activation.mutate({ productId: product.id, activate: !product.isActive })
           }
@@ -105,10 +106,17 @@ interface CategorySectionProps {
   title: string;
   products: CatalogueProduct[];
   pendingProductId: string | null;
+  isLocked: boolean;
   onToggle: (product: CatalogueProduct) => void;
 }
 
-function CategorySection({ title, products, pendingProductId, onToggle }: CategorySectionProps) {
+function CategorySection({
+  title,
+  products,
+  pendingProductId,
+  isLocked,
+  onToggle,
+}: CategorySectionProps) {
   if (products.length === 0) {
     return null;
   }
@@ -124,7 +132,9 @@ function CategorySection({ title, products, pendingProductId, onToggle }: Catego
             </div>
             <button
               type="button"
-              disabled={product.id === pendingProductId}
+              disabled={isLocked}
+              aria-busy={product.id === pendingProductId}
+              aria-label={`${product.isActive ? 'Désactiver' : 'Activer'} ${product.name}`}
               onClick={() => onToggle(product)}
               className={`ml-auto rounded-md px-3 py-1 text-sm font-medium disabled:opacity-60 ${
                 product.isActive
