@@ -11,7 +11,8 @@ datasource db {
 }
 
 enum ProductCategory {
-  BEER
+  PILSNER
+  SPECIALTY_BEER
   SOFT_DRINK
   SPIRIT
   WINE

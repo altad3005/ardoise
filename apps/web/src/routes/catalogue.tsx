@@ -9,7 +9,8 @@ export const Route = createFileRoute('/catalogue')({
 });
 
 const categoryLabels: Record<ProductCategory, string> = {
-  BEER: 'Bières',
+  PILSNER: 'Pils',
+  SPECIALTY_BEER: 'Bières spéciales',
   SOFT_DRINK: 'Softs',
   SPIRIT: 'Alcools',
   WINE: 'Vins',
