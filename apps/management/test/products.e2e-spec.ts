@@ -110,7 +110,9 @@ describe('Catalogue products for a viewer', () => {
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
       .overrideProvider(AssociationContextSource)
-      .useValue({ resolve: () => ({ associationId: DEMO_ASSOCIATION_ID, roles: ['VIEWER'] }) })
+      .useValue({
+        resolve: async () => ({ associationId: DEMO_ASSOCIATION_ID, roles: ['VIEWER'] }),
+      })
       .compile();
     app = moduleRef.createNestApplication();
     await app.init();
@@ -130,5 +132,30 @@ describe('Catalogue products for a viewer', () => {
     const response = await request(app.getHttpServer()).get('/products');
 
     expect(response.status).toBe(200);
+  });
+});
+
+describe('Requests without association context', () => {
+  let app: INestApplication;
+
+  beforeAll(async () => {
+    const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
+      .overrideProvider(AssociationContextSource)
+      .useValue({ resolve: async () => null })
+      .compile();
+    app = moduleRef.createNestApplication();
+    await app.init();
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
+
+  it('rejects listing products', async () => {
+    expect((await request(app.getHttpServer()).get('/products')).status).toBe(401);
+  });
+
+  it('keeps the health check public', async () => {
+    expect((await request(app.getHttpServer()).get('/health')).status).toBe(200);
   });
 });
