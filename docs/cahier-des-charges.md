@@ -2,7 +2,7 @@
 
 > UE Projet d'intégration de développement — EAFC Namur-Cadets — 2026-2027
 > Auteur : Alex Tadino — Chargé de cours : Yolan Fery
-> Version : **1.11** — octobre 2026
+> Version : **1.12** — octobre 2026
 > Justifications des choix structurants et versions de l'outillage : `annexe-justifications.md`.
 > Architecture à deux services : **Identités et organisations**, et **Gestion**, ce dernier contenant les modules **Bar**, **Trésorerie** et **Répertoire**. Le principe des deux services a été validé par le chargé de cours le 24/09/2026 ; le déplacement de l'ardoise dans le module Bar date du 27/09/2026. Voir 9.2, 9.4 et l'annexe §3.
 
@@ -22,6 +22,7 @@
 | 1.9 | 01/10/2026 | Nommage du code en anglais (10.7) : services, modules, schémas PostgreSQL, routes, rôles et façades. Le document garde les termes métier français. |
 | 1.10 | 01/10/2026 | Correction après création du squelette : le modèle NestJS 12 compile avec `tsc`, pas avec Rspack (10.1, 10.6). |
 | 1.11 | 08/10/2026 | Planning réordonné à la demande du chargé de cours : les fonctionnalités métier (catalogue, caisse, ardoises, stock, trésorerie) passent avant les comptes, grâce à un contexte d'association de démonstration (11.2, 11.3). |
+| 1.12 | 15/10/2026 | Critères d'acceptation des US-30 et US-34 alignés sur la v1.7 : une vente à l'ardoise ne crée aucune créance de trésorerie, ni à la vente ni à la clôture. |
 
 ---
 
@@ -422,13 +423,13 @@ Les user stories constituent le backlog du projet. Chacune référence les règl
 - Le stock de chaque produit consommé diminue de (quantité × quantité consommée par l'article).
 - La vente est acceptée même si le stock théorique devient négatif ; le produit est alors signalé.
 - Le serveur, l'heure, les prix appliqués et le statut de paiement sont enregistrés.
-- Si la vente est mise à l'ardoise, une personne doit être désignée, et une créance du montant de la vente est créée dans la même opération.
+- Si la vente est mise à l'ardoise, une personne du répertoire doit être désignée, et l'ardoise est créée dans le module Bar, dans la même transaction que la vente, sans aucune écriture de trésorerie (RG-ARD-08).
 
 **Critères d'acceptation — US-34 (clôturer une soirée)**
 - Seul un gestionnaire de stock ou un administrateur peut clôturer.
 - Après clôture, toute tentative de vente ou d'annulation est refusée.
 - Recette théorique, espèces encaissées, montant attendu par virement et coût du stock consommé sont calculés et figés.
-- Les écritures de trésorerie qui en découlent (rentrée des espèces provenant des ventes, refacturation du coût du stock) sont faites dans la même transaction que la clôture. Les créances d'ardoises, elles, ont été créées à la vente.
+- Les écritures de trésorerie qui en découlent (rentrée des espèces provenant des ventes, refacturation du coût du stock) sont faites dans la même transaction que la clôture. Les ardoises non réglées n'y donnent lieu à aucune écriture : elles restent dans le module Bar jusqu'à leur règlement (RG-ARD-12, RG-TRE-15).
 
 ### 6.5 Trésorerie
 
