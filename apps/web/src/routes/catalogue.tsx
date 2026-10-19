@@ -1,20 +1,14 @@
-import { productCategorySchema, type CatalogueProduct, type ProductCategory } from '@ardoise/types';
+import { productCategorySchema, type CatalogueProduct } from '@ardoise/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { activateProduct, deactivateProduct, fetchProducts } from '../api/products.ts';
+import { categoryLabels } from '../catalogue/category-labels.ts';
+import { NewProductForm } from '../catalogue/new-product-form.tsx';
 
 export const Route = createFileRoute('/catalogue')({
   component: CataloguePage,
 });
-
-const categoryLabels: Record<ProductCategory, string> = {
-  PILSNER: 'Pils',
-  SPECIALTY_BEER: 'Bières spéciales',
-  SOFT_DRINK: 'Softs',
-  SPIRIT: 'Alcools',
-  WINE: 'Vins',
-};
 
 const errorMessage = 'Une erreur est survenue, réessayez plus tard';
 
@@ -25,6 +19,7 @@ interface ActivationChange {
 
 function CataloguePage() {
   const [showOnlyActive, setShowOnlyActive] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
   const queryClient = useQueryClient();
   const products = useQuery({ queryKey: ['products'], queryFn: fetchProducts });
   const activation = useMutation({
@@ -60,8 +55,17 @@ function CataloguePage() {
           <FilterButton isSelected={showOnlyActive} onClick={() => setShowOnlyActive(true)}>
             Actifs
           </FilterButton>
+          <button
+            type="button"
+            onClick={() => setIsCreating(true)}
+            disabled={isCreating}
+            className="rounded-md bg-stone-900 px-3 py-1 text-sm font-medium text-white hover:bg-stone-700 disabled:opacity-60"
+          >
+            Nouveau produit
+          </button>
         </div>
       </div>
+      {isCreating && <NewProductForm onClose={() => setIsCreating(false)} />}
       {activation.isError && (
         <p role="alert" className="mb-4 text-sm text-red-700">
           {errorMessage}

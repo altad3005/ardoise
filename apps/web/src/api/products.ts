@@ -1,4 +1,9 @@
-import { productListSchema, type CatalogueProduct } from '@ardoise/types';
+import {
+  productListSchema,
+  productSchema,
+  type CatalogueProduct,
+  type NewProduct,
+} from '@ardoise/types';
 import { ApiError } from './api-error.ts';
 
 const productsUrl = '/api/management/products';
@@ -9,6 +14,18 @@ export async function fetchProducts(): Promise<CatalogueProduct[]> {
     throw new ApiError(response.status);
   }
   return productListSchema.parse(await response.json());
+}
+
+export async function createProduct(newProduct: NewProduct): Promise<CatalogueProduct> {
+  const response = await fetch(productsUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(newProduct),
+  });
+  if (!response.ok) {
+    throw new ApiError(response.status);
+  }
+  return productSchema.parse(await response.json());
 }
 
 export function activateProduct(productId: string): Promise<void> {
