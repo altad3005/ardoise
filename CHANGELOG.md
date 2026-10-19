@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.3.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.2.0...ardoise-v0.3.0) (2026-10-19)
+
+
+### Features
+
+* **bar:** activate and deactivate catalogue products ([edb9ed5](https://github.com/altad3005/ardoise/commit/edb9ed5d50f80184d36b1272c05929362b9f50ab))
+* **bar:** add catalogue tables with the shared products ([01ed61d](https://github.com/altad3005/ardoise/commit/01ed61ded3f869c4de7b9a48fa04a024383bba6f))
+* **bar:** expose catalogue products and their activation ([af5def9](https://github.com/altad3005/ardoise/commit/af5def96fe56956e61a28083c2cd69165d386ba6))
+* **bar:** split beers into pilsners and specialty beers ([d8d5d1e](https://github.com/altad3005/ardoise/commit/d8d5d1e34ec185b512488c57b73b9680a26bca23))
+* **management:** add demo association context and role guard ([313bbc3](https://github.com/altad3005/ardoise/commit/313bbc31b0480e05c3cd4a72d3042cc196117b95))
+* **types:** add catalogue product schema ([df906d1](https://github.com/altad3005/ardoise/commit/df906d16e18d67fdeec52718fd9a46f70493809a))
+* **web:** add catalogue page ([cdabbeb](https://github.com/altad3005/ardoise/commit/cdabbeb6c09c9e69ffddb1696d29ba25e95756fe))
+
+
+### Bug Fixes
+
+* **web:** lock catalogue toggles while a change is pending ([57f3902](https://github.com/altad3005/ardoise/commit/57f3902fdd841eb8622a9877cf71a84edecdd4cd))
+
 ## [0.2.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.1.0...ardoise-v0.2.0) (2026-10-15)
 
 
