@@ -1,5 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Module, StandardSchemaValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_PIPE } from '@nestjs/core';
 import { AssociationContextModule } from './association-context/association-context.module.js';
 import { BarModule } from './bar/bar.module.js';
 import { validateEnvironment } from './config/environment.js';
@@ -18,5 +19,6 @@ import { TreasuryModule } from './treasury/treasury.module.js';
     TreasuryModule,
     DirectoryModule,
   ],
+  providers: [{ provide: APP_PIPE, useClass: StandardSchemaValidationPipe }],
 })
 export class AppModule {}

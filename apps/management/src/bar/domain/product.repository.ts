@@ -8,6 +8,10 @@ export abstract class ProductRepository {
     productId: string,
   ): Promise<ProductForAssociation | null>;
 
+  abstract existsVisibleWithName(associationId: string, name: string): Promise<boolean>;
+
+  abstract create(product: Product & { associationId: string }): Promise<void>;
+
   abstract activate(associationId: string, product: Product): Promise<void>;
 
   abstract deactivate(associationId: string, productId: string): Promise<void>;

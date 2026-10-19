@@ -12,6 +12,12 @@ export interface ProductForAssociation extends Product {
   isActive: boolean;
 }
 
+export class ProductNameAlreadyUsedError extends Error {
+  constructor() {
+    super('Product name already used');
+  }
+}
+
 export class ProductNotFoundError extends Error {
   constructor() {
     super('Product not found');

@@ -11,6 +11,14 @@ export const productCategorySchema = z.enum([
 
 export type ProductCategory = z.infer<typeof productCategorySchema>;
 
+export const newProductSchema = z.object({
+  name: z.string().trim().min(1).max(80),
+  category: productCategorySchema,
+  stockUnit: z.string().trim().min(1).max(30),
+});
+
+export type NewProduct = z.infer<typeof newProductSchema>;
+
 export const productSchema = z.object({
   id: idSchema,
   name: z.string(),
