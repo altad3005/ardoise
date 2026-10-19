@@ -20,9 +20,11 @@ interface StoredSaleItem {
 export class InMemoryProductRepository extends ProductRepository {
   private readonly activations: Activation[] = [];
   private readonly storedSaleItems: StoredSaleItem[] = [];
+  private readonly products: Product[];
 
-  constructor(private readonly products: readonly Product[]) {
+  constructor(products: readonly Product[]) {
     super();
+    this.products = [...products];
   }
 
   get saleItems(): readonly StoredSaleItem[] {
@@ -46,12 +48,36 @@ export class InMemoryProductRepository extends ProductRepository {
     return product ? this.withActivation(associationId, product) : null;
   }
 
+  async existsVisibleWithName(associationId: string, name: string): Promise<boolean> {
+    return this.products.some(
+      (product) =>
+        isVisibleTo(product, associationId) &&
+        product.name.toLocaleLowerCase() === name.toLocaleLowerCase(),
+    );
+  }
+
+  async create(product: Product & { associationId: string }): Promise<void> {
+    this.products.push(product);
+    this.addActivation(product.associationId, product);
+  }
+
   async activate(associationId: string, product: Product): Promise<void> {
     const activation = this.findActivation(associationId, product.id);
     if (activation) {
       activation.isActive = true;
       return;
     }
+    this.addActivation(associationId, product);
+  }
+
+  async deactivate(associationId: string, productId: string): Promise<void> {
+    const activation = this.findActivation(associationId, productId);
+    if (activation) {
+      activation.isActive = false;
+    }
+  }
+
+  private addActivation(associationId: string, product: Product): void {
     this.activations.push({ associationId, productId: product.id, isActive: true });
     this.storedSaleItems.push({
       associationId,
@@ -61,13 +87,6 @@ export class InMemoryProductRepository extends ProductRepository {
       basePriceCents: null,
       isActive: true,
     });
-  }
-
-  async deactivate(associationId: string, productId: string): Promise<void> {
-    const activation = this.findActivation(associationId, productId);
-    if (activation) {
-      activation.isActive = false;
-    }
   }
 
   private findActivation(associationId: string, productId: string): Activation | undefined {

@@ -1,7 +1,12 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { ProductNotFoundError, type Product } from '../domain/product.js';
+import {
+  ProductNameAlreadyUsedError,
+  ProductNotFoundError,
+  type Product,
+} from '../domain/product.js';
 import { InMemoryProductRepository } from '../infrastructure/in-memory-product.repository.js';
 import { ActivateProduct } from './activate-product.use-case.js';
+import { CreateProduct } from './create-product.use-case.js';
 import { DeactivateProduct } from './deactivate-product.use-case.js';
 import { ListProducts } from './list-products.use-case.js';
 
@@ -118,5 +123,72 @@ describe('ListProducts', () => {
       [ownBeer.id, false],
       [jupiler.id, false],
     ]);
+  });
+});
+
+describe('CreateProduct', () => {
+  let products: InMemoryProductRepository;
+  let createProduct: CreateProduct;
+
+  beforeEach(() => {
+    products = new InMemoryProductRepository([jupiler, otherAssociationBeer]);
+    createProduct = new CreateProduct(products);
+  });
+
+  it('creates an active own product with an unpriced one-unit sale item', async () => {
+    const created = await createProduct.execute(associationId, {
+      name: 'Chips paprika',
+      category: 'SOFT_DRINK',
+      stockUnit: 'sachet',
+    });
+
+    expect(await products.findVisibleById(associationId, created.id)).toEqual({
+      id: created.id,
+      associationId,
+      name: 'Chips paprika',
+      category: 'SOFT_DRINK',
+      stockUnit: 'sachet',
+      isActive: true,
+    });
+    expect(products.saleItems).toEqual([
+      {
+        associationId,
+        productId: created.id,
+        name: 'Chips paprika',
+        consumedQuantity: '1',
+        basePriceCents: null,
+        isActive: true,
+      },
+    ]);
+  });
+
+  it('rejects the name of a shared product, ignoring case', async () => {
+    await expect(
+      createProduct.execute(associationId, {
+        name: 'JUPILER 25 CL',
+        category: 'PILSNER',
+        stockUnit: 'bouteille',
+      }),
+    ).rejects.toBeInstanceOf(ProductNameAlreadyUsedError);
+    expect(products.saleItems).toHaveLength(0);
+  });
+
+  it('rejects the name of an own product', async () => {
+    const newProduct = { name: 'Cuvée maison', category: 'WINE', stockUnit: 'bouteille' } as const;
+    await createProduct.execute(associationId, newProduct);
+
+    await expect(createProduct.execute(associationId, newProduct)).rejects.toBeInstanceOf(
+      ProductNameAlreadyUsedError,
+    );
+  });
+
+  it('accepts the name of a product owned by another association', async () => {
+    const created = await createProduct.execute(associationId, {
+      name: otherAssociationBeer.name,
+      category: 'PILSNER',
+      stockUnit: 'bouteille',
+    });
+
+    expect(created.associationId).toBe(associationId);
   });
 });

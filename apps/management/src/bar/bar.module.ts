@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { DirectoryModule } from '../directory/directory.module.js';
 import { TreasuryModule } from '../treasury/treasury.module.js';
 import { ActivateProduct } from './application/activate-product.use-case.js';
+import { CreateProduct } from './application/create-product.use-case.js';
 import { DeactivateProduct } from './application/deactivate-product.use-case.js';
 import { ListProducts } from './application/list-products.use-case.js';
 import { ProductRepository } from './domain/product.repository.js';
@@ -15,6 +16,7 @@ import { PrismaProductRepository } from './infrastructure/prisma-product.reposit
     ListProducts,
     ActivateProduct,
     DeactivateProduct,
+    CreateProduct,
     { provide: ProductRepository, useClass: PrismaProductRepository },
   ],
 })

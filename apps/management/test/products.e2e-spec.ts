@@ -1,4 +1,9 @@
-import { productListSchema, type CatalogueProduct } from '@ardoise/types';
+import {
+  productListSchema,
+  productSchema,
+  type CatalogueProduct,
+  type NewProduct,
+} from '@ardoise/types';
 import { Test } from '@nestjs/testing';
 import type { INestApplication } from '@nestjs/common';
 import request from 'supertest';
@@ -21,6 +26,8 @@ describe('Catalogue products', () => {
     request(app.getHttpServer()).put(`/products/${productId}/activation`);
   const deactivate = (productId: string) =>
     request(app.getHttpServer()).delete(`/products/${productId}/activation`);
+  const create = (newProduct: Partial<NewProduct>) =>
+    request(app.getHttpServer()).post('/products').send(newProduct);
   const isJupilerActive = async () =>
     (await listProducts()).find((product) => product.id === JUPILER)?.isActive;
 
@@ -34,6 +41,7 @@ describe('Catalogue products', () => {
   beforeEach(async () => {
     await prisma.saleItem.deleteMany();
     await prisma.associationProduct.deleteMany();
+    await prisma.product.deleteMany({ where: { associationId: { not: null } } });
   });
 
   afterAll(async () => {
@@ -99,6 +107,46 @@ describe('Catalogue products', () => {
     expect((await deactivate(UNKNOWN_PRODUCT)).status).toBe(404);
   });
 
+  it('creates an own product, active with its sale item', async () => {
+    const response = await create({
+      name: ' Chips paprika ',
+      category: 'SOFT_DRINK',
+      stockUnit: 'sachet',
+    });
+
+    expect(response.status).toBe(201);
+    const created = productSchema.parse(response.body);
+    expect(created).toEqual({
+      id: created.id,
+      name: 'Chips paprika',
+      category: 'SOFT_DRINK',
+      stockUnit: 'sachet',
+      isShared: false,
+      isActive: true,
+    });
+    expect((await listProducts()).find((product) => product.id === created.id)).toEqual(created);
+    const saleItem = await prisma.saleItem.findFirstOrThrow({ where: { productId: created.id } });
+    expect(saleItem.associationId).toBe(DEMO_ASSOCIATION_ID);
+    expect(saleItem.basePriceCents).toBeNull();
+  });
+
+  it('answers 409 to a name already used', async () => {
+    const response = await create({
+      name: 'jupiler 25 cl',
+      category: 'PILSNER',
+      stockUnit: 'bouteille',
+    });
+
+    expect(response.status).toBe(409);
+    expect(await prisma.product.count({ where: { associationId: { not: null } } })).toBe(0);
+  });
+
+  it('answers 400 to an invalid product', async () => {
+    const response = await create({ name: '  ', category: 'PILSNER' });
+
+    expect(response.status).toBe(400);
+  });
+
   it('answers 404 to a malformed id', async () => {
     expect((await activate('not-a-uuid')).status).toBe(404);
   });
@@ -124,6 +172,14 @@ describe('Catalogue products for a viewer', () => {
 
   it('forbids a viewer to activate', async () => {
     const response = await request(app.getHttpServer()).put(`/products/${JUPILER}/activation`);
+
+    expect(response.status).toBe(403);
+  });
+
+  it('forbids a viewer to create a product', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/products')
+      .send({ name: 'Chips paprika', category: 'SOFT_DRINK', stockUnit: 'sachet' });
 
     expect(response.status).toBe(403);
   });
