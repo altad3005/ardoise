@@ -1,6 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { fetchHealth, type ServiceName } from '../../api/health.ts';
+import { Card } from '../../ui/card.tsx';
+import { classNames } from '../../ui/class-names.ts';
+import { PageHeader } from '../../ui/page-header.tsx';
 
 export const Route = createFileRoute('/_app/')({
   component: HomePage,
@@ -9,11 +12,14 @@ export const Route = createFileRoute('/_app/')({
 function HomePage() {
   return (
     <section>
-      <h2 className="mb-4 text-xl font-semibold">État des services</h2>
-      <ul className="space-y-2">
-        <ServiceStatus service="identity" label="Identité" />
-        <ServiceStatus service="management" label="Gestion" />
-      </ul>
+      <PageHeader title="Accueil" />
+      <h2 className="mb-2 font-display text-xl font-bold">État des services</h2>
+      <Card>
+        <ul className="divide-y divide-line">
+          <ServiceStatus service="identity" label="Identité" />
+          <ServiceStatus service="management" label="Gestion" />
+        </ul>
+      </Card>
     </section>
   );
 }
@@ -26,13 +32,14 @@ function ServiceStatus({ service, label }: { service: ServiceName; label: string
   });
 
   const status = isPending ? 'Vérification…' : isError ? 'Indisponible' : 'Opérationnel';
-  const color = isPending ? 'bg-stone-400' : isError ? 'bg-red-600' : 'bg-green-600';
+  const tone = isPending ? 'text-ink-muted' : isError ? 'text-danger' : 'text-success';
+  const dot = isPending ? 'bg-ink-muted' : isError ? 'bg-danger' : 'bg-success';
 
   return (
-    <li className="flex items-center gap-3 rounded-lg border border-stone-200 bg-white px-4 py-3">
-      <span className={`size-3 rounded-full ${color}`} aria-hidden="true" />
-      <span className="font-medium">{label}</span>
-      <span className="ml-auto text-sm text-stone-600">{status}</span>
+    <li className="flex items-center gap-3 px-4 py-3">
+      <span className={classNames('size-3 rounded-full', dot)} aria-hidden="true" />
+      <span className="font-semibold">{label}</span>
+      <span className={classNames('ml-auto text-sm font-semibold', tone)}>{status}</span>
     </li>
   );
 }
