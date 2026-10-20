@@ -5,6 +5,12 @@ import { useState } from 'react';
 import { activateProduct, deactivateProduct, fetchProducts } from '../../api/products.ts';
 import { categoryLabels } from '../../catalogue/category-labels.ts';
 import { NewProductForm } from '../../catalogue/new-product-form.tsx';
+import { Alert } from '../../ui/alert.tsx';
+import { Badge } from '../../ui/badge.tsx';
+import { Button } from '../../ui/button.tsx';
+import { Card } from '../../ui/card.tsx';
+import { PageHeader } from '../../ui/page-header.tsx';
+import { ToggleButton } from '../../ui/toggle-button.tsx';
 
 export const Route = createFileRoute('/_app/catalogue')({
   component: CataloguePage,
@@ -32,11 +38,7 @@ function CataloguePage() {
     return <p>Chargement…</p>;
   }
   if (products.isError) {
-    return (
-      <p role="alert" className="text-red-700">
-        {errorMessage}
-      </p>
-    );
+    return <Alert>{errorMessage}</Alert>;
   }
 
   const shownProducts = showOnlyActive
@@ -46,32 +48,29 @@ function CataloguePage() {
 
   return (
     <section>
-      <div className="mb-4 flex items-center">
-        <h2 className="text-xl font-semibold">Catalogue</h2>
-        <div className="ml-auto flex gap-2">
-          <FilterButton isSelected={!showOnlyActive} onClick={() => setShowOnlyActive(false)}>
-            Tous
-          </FilterButton>
-          <FilterButton isSelected={showOnlyActive} onClick={() => setShowOnlyActive(true)}>
-            Actifs
-          </FilterButton>
-          <button
-            type="button"
-            onClick={() => setIsCreating(true)}
-            disabled={isCreating}
-            className="rounded-md bg-stone-900 px-3 py-1 text-sm font-medium text-white hover:bg-stone-700 disabled:opacity-60"
-          >
-            Nouveau produit
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        title="Catalogue"
+        actions={
+          <>
+            <ToggleButton isSelected={!showOnlyActive} onClick={() => setShowOnlyActive(false)}>
+              Tous
+            </ToggleButton>
+            <ToggleButton isSelected={showOnlyActive} onClick={() => setShowOnlyActive(true)}>
+              Actifs
+            </ToggleButton>
+            <Button onClick={() => setIsCreating(true)} disabled={isCreating}>
+              Nouveau produit
+            </Button>
+          </>
+        }
+      />
       {isCreating && <NewProductForm onClose={() => setIsCreating(false)} />}
       {activation.isError && (
-        <p role="alert" className="mb-4 text-sm text-red-700">
-          {errorMessage}
-        </p>
+        <div className="mb-4">
+          <Alert>{errorMessage}</Alert>
+        </div>
       )}
-      {shownProducts.length === 0 && <p className="text-stone-500">Aucun produit actif</p>}
+      {shownProducts.length === 0 && <p className="text-ink-muted">Aucun produit actif</p>}
       {productCategorySchema.options.map((category) => (
         <CategorySection
           key={category}
@@ -85,25 +84,6 @@ function CataloguePage() {
         />
       ))}
     </section>
-  );
-}
-
-interface FilterButtonProps {
-  isSelected: boolean;
-  onClick: () => void;
-  children: string;
-}
-
-function FilterButton({ isSelected, onClick, children }: FilterButtonProps) {
-  return (
-    <button
-      type="button"
-      aria-pressed={isSelected}
-      onClick={onClick}
-      className="rounded-md border border-stone-300 px-3 py-1 text-sm aria-pressed:bg-stone-900 aria-pressed:text-white"
-    >
-      {children}
-    </button>
   );
 }
 
@@ -127,31 +107,39 @@ function CategorySection({
   }
   return (
     <div className="mb-6">
-      <h3 className="mb-2 font-medium text-stone-700">{title}</h3>
-      <ul className="divide-y divide-stone-200 rounded-lg border border-stone-200 bg-white">
-        {products.map((product) => (
-          <li key={product.id} className="flex items-center gap-3 px-4 py-2">
-            <div>
-              <p>{product.name}</p>
-              <p className="text-sm text-stone-500">{product.stockUnit}</p>
-            </div>
-            <button
-              type="button"
-              disabled={isLocked}
-              aria-busy={product.id === pendingProductId}
-              aria-label={`${product.isActive ? 'Désactiver' : 'Activer'} ${product.name}`}
-              onClick={() => onToggle(product)}
-              className={`ml-auto rounded-md px-3 py-1 text-sm font-medium disabled:opacity-60 ${
-                product.isActive
-                  ? 'border border-stone-300 text-stone-700 hover:bg-stone-100'
-                  : 'bg-stone-900 text-white hover:bg-stone-700'
-              }`}
-            >
-              {product.id === pendingProductId ? '…' : product.isActive ? 'Désactiver' : 'Activer'}
-            </button>
-          </li>
-        ))}
-      </ul>
+      <h2 className="mb-2 font-display text-xl font-bold">{title}</h2>
+      <Card>
+        <ul className="divide-y divide-line">
+          {products.map((product) => (
+            <li key={product.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
+              <div className="min-w-0 flex-1 basis-40">
+                <p className="font-semibold break-words">{product.name}</p>
+                <p className="text-sm text-ink-muted">{product.stockUnit}</p>
+              </div>
+              <div className="ml-auto flex items-center gap-3">
+                {product.isShared ? (
+                  <Badge>commun</Badge>
+                ) : (
+                  <Badge tone="accent">propre à l'association</Badge>
+                )}
+                <Button
+                  variant={product.isActive ? 'secondary' : 'primary'}
+                  disabled={isLocked}
+                  aria-busy={product.id === pendingProductId}
+                  aria-label={`${product.isActive ? 'Désactiver' : 'Activer'} ${product.name}`}
+                  onClick={() => onToggle(product)}
+                >
+                  {product.id === pendingProductId
+                    ? '…'
+                    : product.isActive
+                      ? 'Désactiver'
+                      : 'Activer'}
+                </Button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </Card>
     </div>
   );
 }
