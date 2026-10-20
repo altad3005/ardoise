@@ -25,11 +25,6 @@ const highlights = [
 function PublicLayout() {
   return (
     <div className="flex min-h-screen flex-col lg:grid lg:grid-cols-2">
-      <main className="flex items-center justify-center px-4 py-10 lg:order-last lg:px-8">
-        <div className="w-full max-w-md">
-          <Outlet />
-        </div>
-      </main>
       <section
         data-theme="service"
         className="flex flex-col gap-10 px-4 py-10 sm:px-8 lg:px-14 lg:py-14"
@@ -61,6 +56,11 @@ function PublicLayout() {
           </a>
         </p>
       </section>
+      <main className="flex items-center justify-center px-4 py-10 lg:px-8">
+        <div className="w-full max-w-md">
+          <Outlet />
+        </div>
+      </main>
     </div>
   );
 }
