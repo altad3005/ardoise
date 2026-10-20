@@ -2,10 +2,10 @@ import { registrationSchema, type Registration } from '@ardoise/types';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState, type ChangeEvent, type ReactNode, type SubmitEvent } from 'react';
-import { ApiError } from '../api/api-error.ts';
-import { registerUser } from '../api/users.ts';
+import { ApiError } from '../../api/api-error.ts';
+import { registerUser } from '../../api/users.ts';
 
-export const Route = createFileRoute('/register')({
+export const Route = createFileRoute('/_public/register')({
   component: RegisterPage,
 });
 
