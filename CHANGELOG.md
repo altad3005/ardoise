@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.6.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.5.1...ardoise-v0.6.0) (2026-10-20)
+
+
+### Features
+
+* **bar:** define purchase packagings ([40e033a](https://github.com/altad3005/ardoise/commit/40e033af245563c380bf248c2395a7904fb7e3ec))
+* **types:** add purchase packaging schema ([7a77896](https://github.com/altad3005/ardoise/commit/7a77896a55260ca65ade6ae2d520ef2639eb95c5))
+* **web:** manage purchase packagings from the catalogue ([9b0d285](https://github.com/altad3005/ardoise/commit/9b0d285c7dbb8185a6de76c08f37e49faf1d68a7))
+
 ## [0.5.1](https://github.com/altad3005/ardoise/compare/ardoise-v0.5.0...ardoise-v0.5.1) (2026-10-20)
 
 
