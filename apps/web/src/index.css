@@ -60,6 +60,13 @@
 
   html {
     font-family: var(--font-sans);
+    scroll-padding-bottom: 6rem;
+  }
+
+  @media (width >= 64rem) {
+    html {
+      scroll-padding-bottom: 0;
+    }
   }
 
   :focus-visible {

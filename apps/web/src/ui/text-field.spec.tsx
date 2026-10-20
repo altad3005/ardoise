@@ -8,6 +8,11 @@ describe('TextField', () => {
     expect(screen.getByLabelText('Adresse e-mail')).toBe(screen.getByRole('textbox'));
   });
 
+  it('is named after its id', () => {
+    render(<TextField id="email" label="Adresse e-mail" />);
+    expect(screen.getByLabelText('Adresse e-mail')).toHaveAttribute('name', 'email');
+  });
+
   it('announces the error', () => {
     render(<TextField id="email" label="Adresse e-mail" error="Adresse e-mail invalide" />);
     const input = screen.getByLabelText('Adresse e-mail');

@@ -13,6 +13,15 @@ describe('SelectField', () => {
     expect(screen.getByRole('option', { name: 'Pils' })).toBeInTheDocument();
   });
 
+  it('is named after its id', () => {
+    render(
+      <SelectField id="category" label="Catégorie">
+        <option value="PILSNER">Pils</option>
+      </SelectField>,
+    );
+    expect(screen.getByLabelText('Catégorie')).toHaveAttribute('name', 'category');
+  });
+
   it('announces the error', () => {
     render(
       <SelectField id="category" label="Catégorie" error="Choisissez une catégorie">
