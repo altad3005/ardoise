@@ -14,6 +14,7 @@ export const fieldControlClassName =
 export function fieldControlProps(id: string, error?: string | null, hint?: string) {
   return {
     id,
+    name: id,
     'aria-invalid': Boolean(error),
     'aria-describedby': (error ?? hint) ? descriptionId(id) : undefined,
   };

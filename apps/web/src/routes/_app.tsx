@@ -29,7 +29,7 @@ function AppLayout() {
               <Link
                 to={link.to}
                 activeOptions={{ exact: link.exact }}
-                className="flex min-h-14 items-center justify-center font-semibold text-ink-muted hover:text-ink aria-[current=page]:text-accent lg:min-h-11 lg:justify-start lg:rounded-md lg:px-3 lg:aria-[current=page]:bg-accent-soft"
+                className="flex min-h-14 items-center justify-center font-semibold focus-visible:-outline-offset-4 text-ink-muted hover:text-ink aria-[current=page]:text-accent lg:min-h-11 lg:justify-start lg:rounded-md lg:px-3 lg:aria-[current=page]:bg-accent-soft"
               >
                 {link.label}
               </Link>
