@@ -1,9 +1,10 @@
 import { z } from 'zod';
 import { idSchema } from '../common/identifier.js';
+import { stockQuantitySchema } from './stock-quantity.js';
 
 export const newPackagingSchema = z.object({
   label: z.string().trim().min(1).max(40),
-  unitCount: z.number().positive().max(10000).multipleOf(0.0001),
+  unitCount: stockQuantitySchema,
 });
 
 export type NewPackaging = z.infer<typeof newPackagingSchema>;
