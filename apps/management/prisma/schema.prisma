@@ -60,14 +60,14 @@ model Packaging {
 }
 
 model SaleItem {
-  id               String  @id @db.Uuid
-  associationId    String  @map("association_id") @db.Uuid
-  productId        String  @map("product_id") @db.Uuid
+  id               String   @id @db.Uuid
+  associationId    String   @map("association_id") @db.Uuid
+  productId        String?  @map("product_id") @db.Uuid
   name             String
-  consumedQuantity Decimal @map("consumed_quantity") @db.Decimal(12, 4)
-  basePriceCents   Int?    @map("base_price_cents")
-  isActive         Boolean @map("is_active")
-  product          Product @relation(fields: [productId], references: [id])
+  consumedQuantity Decimal? @map("consumed_quantity") @db.Decimal(12, 4)
+  basePriceCents   Int?     @map("base_price_cents")
+  isActive         Boolean  @map("is_active")
+  product          Product? @relation(fields: [productId], references: [id], onDelete: Restrict)
 
   @@index([associationId])
   @@map("sale_items")
