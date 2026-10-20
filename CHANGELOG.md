@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.5.1](https://github.com/altad3005/ardoise/compare/ardoise-v0.5.0...ardoise-v0.5.1) (2026-10-20)
+
+
+### Bug Fixes
+
+* **web:** show the app presentation before the registration form on mobile ([61c460c](https://github.com/altad3005/ardoise/commit/61c460cd31226818c3bb3d746bc4066a3774e870))
+
+## [0.5.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.4.0...ardoise-v0.5.0) (2026-10-20)
+
+
+### Features
+
+* **web:** add accessible text and select field components ([470117c](https://github.com/altad3005/ardoise/commit/470117cfd3569264d272a522241dbe5ce71fbc5b))
+* **web:** add alert, card, badge and page header components ([9c9a585](https://github.com/altad3005/ardoise/commit/9c9a585f04b518b6b9d4f114c0c5daf515cfd00e))
+* **web:** add button and toggle button components ([fc140e7](https://github.com/altad3005/ardoise/commit/fc140e7b0125ea7baa9b1ed2bb8506dad105bbfb))
+* **web:** add public and application layouts ([e60b74a](https://github.com/altad3005/ardoise/commit/e60b74aab7c6c5011df2fb60621f48aefb3c5bff))
+* **web:** add theme tokens for the management and service ambiences ([152fe54](https://github.com/altad3005/ardoise/commit/152fe54ecc0fc6f5884e41bcbbc5a032cf144598))
+* **web:** apply the design system to the catalogue ([5b07f09](https://github.com/altad3005/ardoise/commit/5b07f09d6dc0a2ae13dc9bb86f656154602353ee))
+* **web:** apply the design system to the home page and drop the default palette ([702fba1](https://github.com/altad3005/ardoise/commit/702fba1af857f8750147d4e8aff4f1e56e03623a))
+* **web:** apply the design system to the registration page ([335b8b5](https://github.com/altad3005/ardoise/commit/335b8b5e49ddfed4fe6001558d85a374302e7811))
+
+
+### Bug Fixes
+
+* **web:** keep field names and focused elements visible above the bottom nav ([0c9be03](https://github.com/altad3005/ardoise/commit/0c9be03b604e0bb0a79127ec2f0969bc50403b5c))
+
 ## [0.4.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.3.0...ardoise-v0.4.0) (2026-10-20)
 
 
