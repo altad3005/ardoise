@@ -2,20 +2,21 @@ import type { CatalogueProduct, PurchasePackaging } from '@ardoise/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { deletePackaging, fetchPackagings } from '../api/packagings.ts';
+import { formatQuantity } from '../forms/number-format.ts';
 import { Alert } from '../ui/alert.tsx';
 import { Badge } from '../ui/badge.tsx';
 import { Button } from '../ui/button.tsx';
 import { NewPackagingForm } from './new-packaging-form.tsx';
 import { packagingsQueryKey } from './packaging-query-key.ts';
+import { ProductSaleItems } from './product-sale-items.tsx';
 
 const errorMessage = 'Une erreur est survenue, réessayez plus tard';
-const unitCountFormat = new Intl.NumberFormat('fr-BE', { maximumFractionDigits: 4 });
 
 interface ProductPanelProps {
   product: CatalogueProduct;
 }
 
-// TODO: hide packaging creation and deletion from members without the stock manager role (Accounts and associations milestone)
+// TODO: hide packaging and sale item editing from members without the stock manager role (Accounts and associations milestone)
 export function ProductPanel({ product }: ProductPanelProps) {
   const [isAdding, setIsAdding] = useState(false);
   const queryClient = useQueryClient();
@@ -67,6 +68,7 @@ export function ProductPanel({ product }: ProductPanelProps) {
           </div>
         )}
       </section>
+      <ProductSaleItems product={product} />
     </div>
   );
 }
@@ -82,7 +84,7 @@ function PackagingChip({ packaging, isLocked, onDelete }: PackagingChipProps) {
   return (
     <li className="flex items-center gap-2 rounded-md bg-surface-raised py-1 pr-1 pl-3 text-sm">
       <span>
-        {packaging.label} — {unitCountFormat.format(packaging.unitCount)} {unitWord}
+        {packaging.label} — {formatQuantity(packaging.unitCount)} {unitWord}
       </span>
       {packaging.isShared ? (
         <Badge>commun</Badge>
