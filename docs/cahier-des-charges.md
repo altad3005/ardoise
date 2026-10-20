@@ -2,7 +2,7 @@
 
 > UE Projet d'intégration de développement — EAFC Namur-Cadets — 2026-2027
 > Auteur : Alex Tadino — Chargé de cours : Yolan Fery
-> Version : **1.13** — octobre 2026
+> Version : **1.14** — octobre 2026
 > Justifications des choix structurants et versions de l'outillage : `annexe-justifications.md`.
 > Architecture à deux services : **Identités et organisations**, et **Gestion**, ce dernier contenant les modules **Bar**, **Trésorerie** et **Répertoire**. Le principe des deux services a été validé par le chargé de cours le 24/09/2026 ; le déplacement de l'ardoise dans le module Bar date du 27/09/2026. Voir 9.2, 9.4 et l'annexe §3.
 
@@ -24,6 +24,7 @@
 | 1.11 | 08/10/2026 | Planning réordonné à la demande du chargé de cours : les fonctionnalités métier (catalogue, caisse, ardoises, stock, trésorerie) passent avant les comptes, grâce à un contexte d'association de démonstration (11.2, 11.3). |
 | 1.12 | 15/10/2026 | Critères d'acceptation des US-30 et US-34 alignés sur la v1.7 : une vente à l'ardoise ne crée aucune créance de trésorerie, ni à la vente ni à la clôture. |
 | 1.13 | 20/10/2026 | Maquettes versionnées en captures PNG (6bis) ; écrans Connexion, Accueil, Catalogue et Membres maquettés. |
+| 1.14 | 20/10/2026 | Conditionnements communs ou propres à l'association, y compris sur un produit du catalogue commun (RG-CAT-07, 8.3). |
 
 ---
 
@@ -204,7 +205,7 @@ Chaque règle est numérotée pour être référencée dans les user stories, le
 | RG-CAT-04 | Une association choisit les produits qu'elle utilise, communs ou propres. Seuls ceux-ci apparaissent dans ses achats, son stock et ses inventaires. |
 | RG-CAT-05 | L'activation ou la création d'un produit crée automatiquement l'article de vente correspondant, d'une unité de stock ; il ne reste qu'à fixer son prix. Cet article peut ensuite être modifié, désactivé ou complété par d'autres articles du même produit. |
 | RG-CAT-06 | Le stock, le coût, le seuil de réapprovisionnement et les prix de vente sont toujours propres à l'association, y compris pour un produit du catalogue commun. |
-| RG-CAT-07 | Un produit a une **unité de stock** et un ou plusieurs **conditionnements d'achat** exprimés dans cette unité (ex. bac de 24, pack de 6). |
+| RG-CAT-07 | Un produit a une **unité de stock** et un ou plusieurs **conditionnements d'achat** exprimés dans cette unité (ex. bac de 24, pack de 6). Les conditionnements courants sont livrés avec le catalogue commun ; une association peut ajouter les siens, visibles d'elle seule, sur tout produit qu'elle utilise, y compris un produit commun. |
 | RG-CAT-08 | Un article consomme une quantité d'**un seul** produit, exprimée en unité de stock, éventuellement fractionnaire (ex. « Verre de pastis » = 1/20 de bouteille). |
 | RG-CAT-09 | Un même produit peut alimenter plusieurs articles (ex. « Verre de vin » et « Bouteille de vin »). |
 | RG-CAT-10 | Un article a un **prix de vente de base**, qui peut être remplacé par un prix spécifique pour une soirée donnée. |
@@ -650,6 +651,7 @@ erDiagram
     CONDITIONNEMENT {
         uuid id
         uuid produitId
+        uuid associationId "null = catalogue commun"
         string libelle
         decimal quantiteUnites
     }
