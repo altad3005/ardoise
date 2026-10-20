@@ -13,7 +13,7 @@
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
     "lint": "oxlint --type-aware",
-    "lint:boundaries": "depcruise apps/management/src",
+    "lint:boundaries": "depcruise apps/management/src apps/web/src",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check": "pnpm build:types && pnpm format:check && pnpm lint && pnpm lint:boundaries && pnpm typecheck && pnpm test"

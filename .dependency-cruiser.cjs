@@ -45,6 +45,14 @@ module.exports = {
       },
       to: { path: '^apps/management/src/database/' },
     },
+    {
+      name: 'ui-knows-nothing-about-the-domain',
+      comment:
+        'Generic UI components must not depend on API calls, forms, features, routes or shared domain types.',
+      severity: 'error',
+      from: { path: '^apps/web/src/ui/' },
+      to: { path: ['^apps/web/src/(?!ui/)', '(^|/)packages/types/', '@ardoise/types'] },
+    },
   ],
   options: {
     doNotFollow: { path: 'node_modules' },
