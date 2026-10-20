@@ -2,11 +2,11 @@ import { productCategorySchema, type CatalogueProduct } from '@ardoise/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
-import { activateProduct, deactivateProduct, fetchProducts } from '../api/products.ts';
-import { categoryLabels } from '../catalogue/category-labels.ts';
-import { NewProductForm } from '../catalogue/new-product-form.tsx';
+import { activateProduct, deactivateProduct, fetchProducts } from '../../api/products.ts';
+import { categoryLabels } from '../../catalogue/category-labels.ts';
+import { NewProductForm } from '../../catalogue/new-product-form.tsx';
 
-export const Route = createFileRoute('/catalogue')({
+export const Route = createFileRoute('/_app/catalogue')({
   component: CataloguePage,
 });
 
