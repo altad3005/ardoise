@@ -27,6 +27,7 @@ model Product {
   category            ProductCategory
   stockUnit           String               @map("stock_unit")
   associationProducts AssociationProduct[]
+  packagings          Packaging[]
   saleItems           SaleItem[]
 
   @@index([associationId])
@@ -42,6 +43,19 @@ model AssociationProduct {
 
   @@id([associationId, productId])
   @@map("association_products")
+  @@schema("bar")
+}
+
+model Packaging {
+  id            String  @id @db.Uuid
+  productId     String  @map("product_id") @db.Uuid
+  associationId String? @map("association_id") @db.Uuid
+  label         String
+  unitCount     Decimal @map("unit_count") @db.Decimal(12, 4)
+  product       Product @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+  @@map("packagings")
   @@schema("bar")
 }
 
