@@ -1,9 +1,13 @@
 import { registrationSchema, type Registration } from '@ardoise/types';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { useState, type ChangeEvent, type ReactNode, type SubmitEvent } from 'react';
+import { useState, type ChangeEvent, type SubmitEvent } from 'react';
 import { ApiError } from '../../api/api-error.ts';
 import { registerUser } from '../../api/users.ts';
+import { toFieldErrors } from '../../forms/field-errors.ts';
+import { Alert } from '../../ui/alert.tsx';
+import { Button } from '../../ui/button.tsx';
+import { TextField } from '../../ui/text-field.tsx';
 
 export const Route = createFileRoute('/_public/register')({
   component: RegisterPage,
@@ -28,11 +32,7 @@ function RegisterPage() {
 
   if (mutation.isSuccess) {
     // TODO: link to /login once US-02 is done
-    return (
-      <p className="rounded-lg border border-stone-200 bg-white px-4 py-3">
-        Votre compte est créé.
-      </p>
-    );
+    return <Alert tone="success">Votre compte est créé.</Alert>;
   }
 
   const update = (field: Field) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +43,7 @@ function RegisterPage() {
     event.preventDefault();
     const result = registrationSchema.safeParse(registration);
     if (!result.success) {
-      setFieldErrors(toFieldErrors(result.error.issues));
+      setFieldErrors(toFieldErrors(result.error.issues, fieldErrorMessages));
       return;
     }
     setFieldErrors({});
@@ -54,13 +54,10 @@ function RegisterPage() {
   const formError = mutation.error && !isEmailTaken ? describeServerError(mutation.error) : null;
 
   return (
-    <section className="mx-auto max-w-md">
-      <h2 className="mb-4 text-xl font-semibold">Créer un compte</h2>
-      <form
-        noValidate
-        onSubmit={handleSubmit}
-        className="space-y-4 rounded-lg border border-stone-200 bg-white px-4 py-5"
-      >
+    <section>
+      <h1 className="font-display text-3xl font-bold">Créer un compte</h1>
+      <p className="mt-1 mb-6 text-ink-muted">Vos associations vous attendent de l'autre côté.</p>
+      <form noValidate onSubmit={handleSubmit} className="space-y-4">
         <TextField
           id="email"
           label="Adresse e-mail"
@@ -90,78 +87,18 @@ function RegisterPage() {
           hint="12 caractères minimum"
           error={fieldErrors.password}
           action={
-            <button
-              type="button"
-              onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-              className="rounded-md border border-stone-300 px-3 text-sm text-stone-700 hover:bg-stone-100"
-            >
+            <Button variant="secondary" onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
               {isPasswordVisible ? 'Masquer' : 'Afficher'}
-            </button>
+            </Button>
           }
         />
-        {formError && (
-          <p role="alert" className="text-sm text-red-700">
-            {formError}
-          </p>
-        )}
-        <button
-          type="submit"
-          disabled={mutation.isPending}
-          className="w-full rounded-md bg-stone-900 px-4 py-2 font-medium text-white hover:bg-stone-700 disabled:opacity-60"
-        >
+        {formError && <Alert>{formError}</Alert>}
+        <Button type="submit" isPending={mutation.isPending} className="w-full">
           {mutation.isPending ? 'Création…' : 'Créer mon compte'}
-        </button>
+        </Button>
       </form>
     </section>
   );
-}
-
-interface TextFieldProps {
-  id: Field;
-  label: string;
-  type?: string;
-  autoComplete: string;
-  value: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  hint?: string;
-  error?: string | null;
-  action?: ReactNode;
-}
-
-function TextField({ id, label, hint, error, action, ...inputProps }: TextFieldProps) {
-  const descriptionId = `${id}-description`;
-  return (
-    <div>
-      <label htmlFor={id} className="mb-1 block text-sm font-medium">
-        {label}
-      </label>
-      <div className="flex gap-2">
-        <input
-          id={id}
-          name={id}
-          aria-invalid={Boolean(error)}
-          aria-describedby={descriptionId}
-          className="w-full rounded-md border border-stone-300 px-3 py-2 aria-invalid:border-red-600"
-          {...inputProps}
-        />
-        {action}
-      </div>
-      <p id={descriptionId} className={`mt-1 text-sm ${error ? 'text-red-700' : 'text-stone-500'}`}>
-        {error ?? hint}
-      </p>
-    </div>
-  );
-}
-
-function toFieldErrors(issues: readonly { path: readonly PropertyKey[] }[]): FieldErrors {
-  const errors: FieldErrors = {};
-  for (const issue of issues) {
-    const field = issue.path[0];
-    if (field === 'email' || field === 'displayName' || field === 'password') {
-      errors[field] = fieldErrorMessages[field];
-    }
-  }
-  return errors;
 }
 
 function describeServerError(error: Error): string {
