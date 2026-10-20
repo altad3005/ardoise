@@ -2,7 +2,7 @@
 
 > UE Projet d'intégration de développement — EAFC Namur-Cadets — 2026-2027
 > Auteur : Alex Tadino — Chargé de cours : Yolan Fery
-> Version : **1.12** — octobre 2026
+> Version : **1.13** — octobre 2026
 > Justifications des choix structurants et versions de l'outillage : `annexe-justifications.md`.
 > Architecture à deux services : **Identités et organisations**, et **Gestion**, ce dernier contenant les modules **Bar**, **Trésorerie** et **Répertoire**. Le principe des deux services a été validé par le chargé de cours le 24/09/2026 ; le déplacement de l'ardoise dans le module Bar date du 27/09/2026. Voir 9.2, 9.4 et l'annexe §3.
 
@@ -23,6 +23,7 @@
 | 1.10 | 01/10/2026 | Correction après création du squelette : le modèle NestJS 12 compile avec `tsc`, pas avec Rspack (10.1, 10.6). |
 | 1.11 | 08/10/2026 | Planning réordonné à la demande du chargé de cours : les fonctionnalités métier (catalogue, caisse, ardoises, stock, trésorerie) passent avant les comptes, grâce à un contexte d'association de démonstration (11.2, 11.3). |
 | 1.12 | 15/10/2026 | Critères d'acceptation des US-30 et US-34 alignés sur la v1.7 : une vente à l'ardoise ne crée aucune créance de trésorerie, ni à la vente ni à la clôture. |
+| 1.13 | 20/10/2026 | Maquettes versionnées en captures PNG (6bis) ; écrans Connexion, Accueil, Catalogue et Membres maquettés. |
 
 ---
 
@@ -465,10 +466,13 @@ Les user stories constituent le backlog du projet. Chacune référence les règl
 
 ## 6bis. Écrans
 
-Les maquettes sont dans le dossier **`docs/maquettes/`** du dépôt (fichiers HTML ouvrables directement, index dans `docs/maquettes/README.md`), en deux formats : ordinateur et tablette (1280 × 800) et téléphone (390 × 844).
+Les maquettes sont dans le dossier **`docs/maquettes/`** du dépôt (captures PNG, générées depuis des maquettes HTML ; index dans `docs/maquettes/README.md`), en trois formats : ordinateur (1440 × 900), tablette pour les écrans du bar (1280 × 800) et téléphone (390 × 844).
 
 | Écran | Rôle | Contenu | Maquettes |
 |---|---|---|---|
+| Connexion | Visiteur | Se connecter, créer un compte, présentation de l'application | `Connexion`, `ConnexionMobile` |
+| Accueil | Tous | Soirée en cours, situation nette, points d'attention, dernière activité | `Accueil`, `AccueilMobile` |
+| Catalogue | Gestionnaire | Produits communs et propres, activation, articles de vente | `Catalogue`, `CatalogueMobile` |
 | Caisse | Serveur, gestionnaire | Carte des articles, commande en cours, encaisser ou mettre à l'ardoise, annulation de la dernière vente, sortie (offert, casse, perte), règlement d'ardoise | `Caisse`, `CaisseMobile`, `CaisseMobilePanier` |
 | Ardoise | Serveur | Choix d'une ou plusieurs personnes, solde déjà dû, répartition du montant, contrôle de la somme des parts | `Ardoise`, `ArdoiseMobile` |
 | Règlement d'ardoise | Serveur | Personne, montant reçu, espèces ou virement, ardoises soldées | `ReglementMobile` |
@@ -479,7 +483,7 @@ Les maquettes sont dans le dossier **`docs/maquettes/`** du dépôt (fichiers HT
 | Inventaire | Gestionnaire | Comptage produit par produit, écart calculé, produits non comptés distingués | `Inventaire`, `InventaireMobile` |
 | Trésorerie | Trésorier | Situation nette, soldes, résultat par projet, derniers mouvements | `Tresorerie`, `TresorerieMobile` |
 | Qui doit quoi | Trésorier | Par tiers : ardoises du comptoir, frais avancés, consignes ; encaisser, détailler, passer en perte (RG-REP-05) | `Creances`, `CreancesMobile` |
-| Membres | Administrateur | Membres, rôles, code d'adhésion | à maquetter |
+| Membres | Administrateur | Membres, rôles, code d'adhésion | `Membres`, `MembresMobile` |
 
 Toutes ces vues sont responsives (ENF-04 à 07) : sur téléphone, les tableaux deviennent des listes de cartes, le menu latéral une barre basse, et les panneaux côte à côte des écrans successifs.
 
