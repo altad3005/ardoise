@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.3.0...ardoise-v0.4.0) (2026-10-20)
+
+
+### Features
+
+* **bar:** create association-specific products ([4c1f4f4](https://github.com/altad3005/ardoise/commit/4c1f4f4ce9ab73bb5bffb30945acd8c210b4ceef))
+* **web:** create association-specific products from the catalogue ([f352530](https://github.com/altad3005/ardoise/commit/f352530e92e29db73e0c36c002fe411ad5b892d5))
+
 ## [0.3.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.2.0...ardoise-v0.3.0) (2026-10-19)
 
 
