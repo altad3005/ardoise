@@ -72,7 +72,7 @@ describe('Catalogue products', () => {
     const saleItem = await prisma.saleItem.findFirstOrThrow({ where: { productId: JUPILER } });
     expect(saleItem.associationId).toBe(DEMO_ASSOCIATION_ID);
     expect(saleItem.name).toBe('Jupiler 25 cl');
-    expect(saleItem.consumedQuantity.toString()).toBe('1');
+    expect(saleItem.consumedQuantity?.toString()).toBe('1');
     expect(saleItem.basePriceCents).toBeNull();
     expect(saleItem.isActive).toBe(true);
   });
