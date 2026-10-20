@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import tailwindcss from '@tailwindcss/vite';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
@@ -16,5 +17,10 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api\/management/, ''),
       },
     },
+  },
+  test: {
+    environment: 'jsdom',
+    include: ['src/**/*.spec.{ts,tsx}'],
+    setupFiles: ['src/test-setup.ts'],
   },
 });
