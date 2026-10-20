@@ -4,6 +4,7 @@ import { useState, type SubmitEvent } from 'react';
 import { ApiError } from '../api/api-error.ts';
 import { createPackaging } from '../api/packagings.ts';
 import { toFieldErrors } from '../forms/field-errors.ts';
+import { parseDecimal } from '../forms/number-input.ts';
 import { Alert } from '../ui/alert.tsx';
 import { Button } from '../ui/button.tsx';
 import { TextField } from '../ui/text-field.tsx';
@@ -84,8 +85,4 @@ export function NewPackagingForm({ productId, onClose }: NewPackagingFormProps) 
       </div>
     </form>
   );
-}
-
-function parseDecimal(value: string): number {
-  return value.trim() === '' ? Number.NaN : Number(value.replace(',', '.'));
 }

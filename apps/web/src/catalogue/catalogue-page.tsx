@@ -12,7 +12,9 @@ import { ToggleButton } from '../ui/toggle-button.tsx';
 import { useMediaQuery } from '../ui/use-media-query.ts';
 import { categoryLabels } from './category-labels.ts';
 import { NewProductForm } from './new-product-form.tsx';
+import { NewStocklessSaleItemForm } from './new-stockless-sale-item-form.tsx';
 import { ProductPanel } from './product-panel.tsx';
+import { StocklessSaleItems } from './stockless-sale-items.tsx';
 
 const errorMessage = 'Une erreur est survenue, réessayez plus tard';
 
@@ -24,6 +26,7 @@ interface ActivationChange {
 export function CataloguePage() {
   const [showOnlyActive, setShowOnlyActive] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [isCreatingStockless, setIsCreatingStockless] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const isWide = useMediaQuery('(min-width: 64rem)');
   const queryClient = useQueryClient();
@@ -59,6 +62,13 @@ export function CataloguePage() {
             <ToggleButton isSelected={showOnlyActive} onClick={() => setShowOnlyActive(true)}>
               Actifs
             </ToggleButton>
+            <Button
+              variant="secondary"
+              onClick={() => setIsCreatingStockless(true)}
+              disabled={isCreatingStockless}
+            >
+              Nouvel article sans stock
+            </Button>
             <Button onClick={() => setIsCreating(true)} disabled={isCreating}>
               Nouveau produit
             </Button>
@@ -66,6 +76,9 @@ export function CataloguePage() {
         }
       />
       {isCreating && <NewProductForm onClose={() => setIsCreating(false)} />}
+      {isCreatingStockless && (
+        <NewStocklessSaleItemForm onClose={() => setIsCreatingStockless(false)} />
+      )}
       {activation.isError && (
         <div className="mb-4">
           <Alert>{errorMessage}</Alert>
@@ -91,6 +104,7 @@ export function CataloguePage() {
               }
             />
           ))}
+          <StocklessSaleItems />
         </div>
         {isWide && selectedProduct && (
           <Card className="sticky top-6">

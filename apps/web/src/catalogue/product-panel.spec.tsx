@@ -34,7 +34,7 @@ afterEach(() => {
 
 describe('ProductPanel', () => {
   it('lists the packagings with their unit count', async () => {
-    stubFetch(() => jsonResponse([ownPack, sharedCrate]));
+    stubFetch((url) => jsonResponse(url.endsWith('/packagings') ? [ownPack, sharedCrate] : []));
     renderWithQueryClient(<ProductPanel product={jupiler} />);
 
     const packagings = await screen.findByRole('list', { name: "Conditionnements d'achat" });
@@ -44,10 +44,10 @@ describe('ProductPanel', () => {
   });
 
   it('only lets an own packaging be deleted', async () => {
-    const fetchMock = stubFetch((_url, init) =>
+    const fetchMock = stubFetch((url, init) =>
       init?.method === 'DELETE'
         ? new Response(null, { status: 204 })
-        : jsonResponse([ownPack, sharedCrate]),
+        : jsonResponse(url.endsWith('/packagings') ? [ownPack, sharedCrate] : []),
     );
     renderWithQueryClient(<ProductPanel product={jupiler} />);
 
