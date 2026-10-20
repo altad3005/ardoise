@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/altad3005/ardoise/compare/ardoise-v0.5.0...ardoise-v0.5.1) (2026-10-20)
+
+
+### Bug Fixes
+
+* **web:** show the app presentation before the registration form on mobile ([61c460c](https://github.com/altad3005/ardoise/commit/61c460cd31226818c3bb3d746bc4066a3774e870))
+
 ## [0.5.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.4.0...ardoise-v0.5.0) (2026-10-20)
 
 
