@@ -2,7 +2,7 @@
 
 > UE Projet d'intégration de développement — EAFC Namur-Cadets — 2026-2027
 > Auteur : Alex Tadino — Chargé de cours : Yolan Fery
-> Version : **1.14** — octobre 2026
+> Version : **1.15** — octobre 2026
 > Justifications des choix structurants et versions de l'outillage : `annexe-justifications.md`.
 > Architecture à deux services : **Identités et organisations**, et **Gestion**, ce dernier contenant les modules **Bar**, **Trésorerie** et **Répertoire**. Le principe des deux services a été validé par le chargé de cours le 24/09/2026 ; le déplacement de l'ardoise dans le module Bar date du 27/09/2026. Voir 9.2, 9.4 et l'annexe §3.
 
@@ -25,6 +25,7 @@
 | 1.12 | 15/10/2026 | Critères d'acceptation des US-30 et US-34 alignés sur la v1.7 : une vente à l'ardoise ne crée aucune créance de trésorerie, ni à la vente ni à la clôture. |
 | 1.13 | 20/10/2026 | Maquettes versionnées en captures PNG (6bis) ; écrans Connexion, Accueil, Catalogue et Membres maquettés. |
 | 1.14 | 20/10/2026 | Conditionnements communs ou propres à l'association, y compris sur un produit du catalogue commun (RG-CAT-07, 8.3). |
+| 1.15 | 21/10/2026 | Carte de la caisse par défaut, tenue sur un écran dédié et proposée à l'ouverture de chaque soirée (RG-CAT-13, 6bis) ; une seule position d'affichage par article, vide quand l'article est hors carte (8.3). |
 
 ---
 
@@ -211,7 +212,7 @@ Chaque règle est numérotée pour être référencée dans les user stories, le
 | RG-CAT-10 | Un article a un **prix de vente de base**, qui peut être remplacé par un prix spécifique pour une soirée donnée. |
 | RG-CAT-11 | Un produit ou un article ayant déjà servi n'est jamais supprimé, seulement désactivé. |
 | RG-CAT-12 | Un article peut être **sans stock** : il ne consomme aucun produit et ne génère aucun mouvement de stock (entrée de soirée, ticket de brunch, place d'activité, participation). Sa vente est une recette au même titre qu'une autre. |
-| RG-CAT-13 | Chaque association compose la **carte de sa caisse** : la liste des articles affichés à l'écran de vente, dans l'ordre choisi. Les autres articles restent accessibles par une recherche, sans encombrer l'écran. |
+| RG-CAT-13 | Chaque association compose la **carte de sa caisse** : la liste des articles affichés à l'écran de vente, dans l'ordre choisi. Cette carte par défaut, tenue sur un écran dédié, est proposée à l'ouverture de chaque soirée (RG-SOI-02, RG-SOI-04). Les autres articles restent accessibles par une recherche, sans encombrer l'écran. |
 
 ### 5.4 Stock (RG-STK)
 
@@ -474,6 +475,7 @@ Les maquettes sont dans le dossier **`docs/maquettes/`** du dépôt (captures PN
 | Connexion | Visiteur | Se connecter, créer un compte, présentation de l'application | `Connexion`, `ConnexionMobile` |
 | Accueil | Tous | Soirée en cours, situation nette, points d'attention, dernière activité | `Accueil`, `AccueilMobile` |
 | Catalogue | Gestionnaire | Produits communs et propres, activation, articles de vente | `Catalogue`, `CatalogueMobile` |
+| Carte de la caisse | Gestionnaire | Carte par défaut proposée à l'ouverture d'une soirée : articles, ordre d'affichage, ajout et retrait | — |
 | Caisse | Serveur, gestionnaire | Carte des articles, commande en cours, encaisser ou mettre à l'ardoise, annulation de la dernière vente, sortie (offert, casse, perte), règlement d'ardoise | `Caisse`, `CaisseMobile`, `CaisseMobilePanier` |
 | Ardoise | Serveur | Choix d'une ou plusieurs personnes, solde déjà dû, répartition du montant, contrôle de la somme des parts | `Ardoise`, `ArdoiseMobile` |
 | Règlement d'ardoise | Serveur | Personne, montant reçu, espèces ou virement, ardoises soldées | `ReglementMobile` |
@@ -670,8 +672,7 @@ erDiagram
         string nom
         decimal quantiteConsommee
         int prixBaseCentimes
-        int ordreCarte
-        bool surCarteParDefaut
+        int ordreCarte "vide si hors carte"
         bool actif
     }
     PRIX_SOIREE {
