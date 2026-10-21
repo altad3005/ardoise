@@ -29,6 +29,7 @@ export const saleItemSchema = z.object({
   consumedQuantity: z.number().nullable(),
   basePriceCents: z.int().nullable(),
   isActive: z.boolean(),
+  menuPosition: z.int().nullable(),
 });
 
 export type CatalogueSaleItem = z.infer<typeof saleItemSchema>;

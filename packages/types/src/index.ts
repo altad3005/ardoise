@@ -6,4 +6,5 @@ export * from './identity/registration.js';
 export * from './bar/product.js';
 export * from './bar/packaging.js';
 export * from './bar/sale-item.js';
+export * from './bar/menu.js';
 export * from './bar/stock-quantity.js';
