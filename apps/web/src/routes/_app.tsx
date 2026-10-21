@@ -1,4 +1,5 @@
 import { Link, Outlet, createFileRoute } from '@tanstack/react-router';
+import { Logo } from '../ui/logo.tsx';
 
 export const Route = createFileRoute('/_app')({
   component: AppLayout,
@@ -49,8 +50,8 @@ function AppLayout() {
 
 function Brand() {
   return (
-    <Link to="/" className="font-display text-xl font-bold">
-      Ardoise
+    <Link to="/">
+      <Logo className="h-7" />
     </Link>
   );
 }

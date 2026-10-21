@@ -1,4 +1,5 @@
 import { Link, Outlet, createFileRoute } from '@tanstack/react-router';
+import { Logo } from '../ui/logo.tsx';
 
 export const Route = createFileRoute('/_public')({
   component: PublicLayout,
@@ -29,8 +30,8 @@ function PublicLayout() {
         data-theme="service"
         className="flex flex-col gap-10 px-4 py-10 sm:px-8 lg:px-14 lg:py-14"
       >
-        <Link to="/" className="font-display text-2xl font-bold">
-          Ardoise
+        <Link to="/" className="self-start">
+          <Logo className="h-8" />
         </Link>
         <div>
           <h2 className="font-display text-3xl font-bold sm:text-4xl">
