@@ -13,6 +13,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppCatalogueRouteImport } from './routes/_app/catalogue'
+import { Route as AppMenuRouteImport } from './routes/_app/menu'
 import { Route as PublicRegisterRouteImport } from './routes/_public/register'
 
 const AppRoute = AppRouteImport.update({
@@ -33,6 +34,11 @@ const AppCatalogueRoute = AppCatalogueRouteImport.update({
   path: '/catalogue',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMenuRoute = AppMenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => AppRoute,
+} as any)
 const PublicRegisterRoute = PublicRegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -42,11 +48,13 @@ const PublicRegisterRoute = PublicRegisterRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/catalogue': typeof AppCatalogueRoute
+  '/menu': typeof AppMenuRoute
   '/register': typeof PublicRegisterRoute
 }
 export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
   '/catalogue': typeof AppCatalogueRoute
+  '/menu': typeof AppMenuRoute
   '/register': typeof PublicRegisterRoute
 }
 export interface FileRoutesById {
@@ -54,19 +62,21 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/_public': typeof PublicRouteWithChildren
   '/_app/catalogue': typeof AppCatalogueRoute
+  '/_app/menu': typeof AppMenuRoute
   '/_public/register': typeof PublicRegisterRoute
   '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/catalogue' | '/register'
+  fullPaths: '/' | '/catalogue' | '/menu' | '/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/catalogue' | '/register'
+  to: '/' | '/catalogue' | '/menu' | '/register'
   id:
     | '__root__'
     | '/_app'
     | '/_public'
     | '/_app/catalogue'
+    | '/_app/menu'
     | '/_public/register'
     | '/_app/'
   fileRoutesById: FileRoutesById
@@ -106,6 +116,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCatalogueRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/menu': {
+      id: '/_app/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof AppMenuRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_public/register': {
       id: '/_public/register'
       path: '/register'
@@ -118,11 +135,13 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppCatalogueRoute: typeof AppCatalogueRoute
+  AppMenuRoute: typeof AppMenuRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppCatalogueRoute: AppCatalogueRoute,
+  AppMenuRoute: AppMenuRoute,
   AppIndexRoute: AppIndexRoute,
 }
 

@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchStocklessSaleItems, updateSaleItem } from '../api/sale-items.ts';
 import { Alert } from '../ui/alert.tsx';
 import { SaleItemCard } from './sale-item-card.tsx';
-import { stocklessSaleItemsQueryKey } from './sale-item-query-keys.ts';
+import { saleItemsQueryKey, stocklessSaleItemsQueryKey } from './sale-item-query-keys.ts';
 
 export function StocklessSaleItems() {
   const queryClient = useQueryClient();
@@ -29,7 +29,7 @@ export function StocklessSaleItems() {
             saleItem={saleItem}
             save={async (changes) => {
               await updateSaleItem(saleItem.id, changes);
-              await queryClient.invalidateQueries({ queryKey: stocklessSaleItemsQueryKey });
+              await queryClient.invalidateQueries({ queryKey: saleItemsQueryKey });
             }}
           />
         ))}

@@ -13,6 +13,7 @@ const pastisBottle: CatalogueSaleItem = {
   consumedQuantity: 1,
   basePriceCents: null,
   isActive: true,
+  menuPosition: null,
 };
 
 function saveMock() {

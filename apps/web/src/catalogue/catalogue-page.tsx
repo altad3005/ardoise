@@ -14,6 +14,7 @@ import { categoryLabels } from './category-labels.ts';
 import { NewProductForm } from './new-product-form.tsx';
 import { NewStocklessSaleItemForm } from './new-stockless-sale-item-form.tsx';
 import { ProductPanel } from './product-panel.tsx';
+import { saleItemsQueryKey } from './sale-item-query-keys.ts';
 import { StocklessSaleItems } from './stockless-sale-items.tsx';
 
 const errorMessage = 'Une erreur est survenue, réessayez plus tard';
@@ -34,7 +35,11 @@ export function CataloguePage() {
   const activation = useMutation({
     mutationFn: ({ productId, activate }: ActivationChange) =>
       activate ? activateProduct(productId) : deactivateProduct(productId),
-    onSettled: () => queryClient.invalidateQueries({ queryKey: ['products'] }),
+    onSettled: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['products'] }),
+        queryClient.invalidateQueries({ queryKey: saleItemsQueryKey }),
+      ]),
   });
 
   if (products.isPending) {

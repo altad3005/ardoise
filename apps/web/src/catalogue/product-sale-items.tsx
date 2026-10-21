@@ -6,7 +6,7 @@ import { Alert } from '../ui/alert.tsx';
 import { Button } from '../ui/button.tsx';
 import { SaleItemCard } from './sale-item-card.tsx';
 import { SaleItemForm } from './sale-item-form.tsx';
-import { productSaleItemsQueryKey } from './sale-item-query-keys.ts';
+import { productSaleItemsQueryKey, saleItemsQueryKey } from './sale-item-query-keys.ts';
 
 interface ProductSaleItemsProps {
   product: CatalogueProduct;
@@ -21,7 +21,7 @@ export function ProductSaleItems({ product }: ProductSaleItemsProps) {
 
   const refreshAfter = async (request: Promise<unknown>) => {
     await request;
-    await queryClient.invalidateQueries({ queryKey });
+    await queryClient.invalidateQueries({ queryKey: saleItemsQueryKey });
   };
   const create = (changes: SaleItemChanges) =>
     refreshAfter(createSaleItem(product.id, newSaleItemSchema.parse(changes)));

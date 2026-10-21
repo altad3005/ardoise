@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { createStocklessSaleItem } from '../api/sale-items.ts';
 import { Card } from '../ui/card.tsx';
 import { SaleItemForm } from './sale-item-form.tsx';
-import { stocklessSaleItemsQueryKey } from './sale-item-query-keys.ts';
+import { saleItemsQueryKey } from './sale-item-query-keys.ts';
 
 interface NewStocklessSaleItemFormProps {
   onClose: () => void;
@@ -14,7 +14,7 @@ export function NewStocklessSaleItemForm({ onClose }: NewStocklessSaleItemFormPr
 
   const create = async (changes: SaleItemChanges) => {
     await createStocklessSaleItem(newStocklessSaleItemSchema.parse(changes));
-    await queryClient.invalidateQueries({ queryKey: stocklessSaleItemsQueryKey });
+    await queryClient.invalidateQueries({ queryKey: saleItemsQueryKey });
   };
 
   return (

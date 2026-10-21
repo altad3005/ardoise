@@ -1,5 +1,6 @@
 import {
   saleItemListSchema,
+  type MenuComposition,
   saleItemSchema,
   type CatalogueSaleItem,
   type NewSaleItem,
@@ -11,6 +12,11 @@ import { ApiError } from './api-error.ts';
 const productSaleItemsUrl = (productId: string) =>
   `/api/management/products/${productId}/sale-items`;
 const stocklessSaleItemsUrl = '/api/management/stockless-sale-items';
+const menuUrl = '/api/management/menu';
+
+export function fetchSaleItems(): Promise<CatalogueSaleItem[]> {
+  return fetchList('/api/management/sale-items');
+}
 
 export function fetchProductSaleItems(productId: string): Promise<CatalogueSaleItem[]> {
   return fetchList(productSaleItemsUrl(productId));
@@ -40,6 +46,14 @@ export function updateSaleItem(
   return send('PUT', `/api/management/sale-items/${saleItemId}`, changes);
 }
 
+export function fetchMenu(): Promise<CatalogueSaleItem[]> {
+  return fetchList(menuUrl);
+}
+
+export async function composeMenu(composition: MenuComposition): Promise<CatalogueSaleItem[]> {
+  return saleItemListSchema.parse(await sendJson('PUT', menuUrl, composition));
+}
+
 async function fetchList(url: string): Promise<CatalogueSaleItem[]> {
   const response = await fetch(url);
   if (!response.ok) {
@@ -49,6 +63,10 @@ async function fetchList(url: string): Promise<CatalogueSaleItem[]> {
 }
 
 async function send(method: 'POST' | 'PUT', url: string, body: object): Promise<CatalogueSaleItem> {
+  return saleItemSchema.parse(await sendJson(method, url, body));
+}
+
+async function sendJson(method: 'POST' | 'PUT', url: string, body: object): Promise<unknown> {
   const response = await fetch(url, {
     method,
     headers: { 'Content-Type': 'application/json' },
@@ -57,5 +75,5 @@ async function send(method: 'POST' | 'PUT', url: string, body: object): Promise<
   if (!response.ok) {
     throw new ApiError(response.status);
   }
-  return saleItemSchema.parse(await response.json());
+  return response.json();
 }

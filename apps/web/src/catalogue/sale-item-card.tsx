@@ -43,9 +43,15 @@ export function SaleItemCard({ saleItem, stockUnit, save }: SaleItemCardProps) {
             consomme {formatQuantity(saleItem.consumedQuantity)} {stockUnit}
           </span>
         )}
+        <span className="ml-auto">
+          {saleItem.menuPosition === null ? (
+            <Badge>hors carte</Badge>
+          ) : (
+            <Badge tone="accent">sur la carte</Badge>
+          )}
+        </span>
         <Button
           variant="secondary"
-          className="ml-auto"
           aria-label={`Modifier ${saleItem.name}`}
           onClick={() => setIsEditing(true)}
         >

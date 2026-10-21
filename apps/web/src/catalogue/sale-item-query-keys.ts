@@ -1,7 +1,13 @@
+export const saleItemsQueryKey = ['sale-items'];
+
+export const allSaleItemsQueryKey = [...saleItemsQueryKey, 'all'];
+
 export const productSaleItemsQueryKey = (productId: string) => [
-  'products',
+  ...saleItemsQueryKey,
+  'product',
   productId,
-  'sale-items',
 ];
 
-export const stocklessSaleItemsQueryKey = ['stockless-sale-items'];
+export const stocklessSaleItemsQueryKey = [...saleItemsQueryKey, 'stockless'];
+
+export const menuQueryKey = [...saleItemsQueryKey, 'menu'];
