@@ -19,6 +19,7 @@ export class CreateStocklessSaleItem {
       consumedQuantity: null,
       ...newSaleItem,
       isActive: true,
+      menuPosition: null,
     };
     await this.saleItems.create(saleItem);
     return saleItem;

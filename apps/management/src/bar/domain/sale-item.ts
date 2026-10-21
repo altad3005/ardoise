@@ -6,6 +6,7 @@ export interface SaleItem {
   consumedQuantity: number | null;
   basePriceCents: number | null;
   isActive: boolean;
+  menuPosition: number | null;
 }
 
 export class SaleItemNameAlreadyUsedError extends Error {
@@ -17,6 +18,12 @@ export class SaleItemNameAlreadyUsedError extends Error {
 export class SaleItemNotFoundError extends Error {
   constructor() {
     super('Sale item not found');
+  }
+}
+
+export class SaleItemInactiveError extends Error {
+  constructor() {
+    super('An inactive sale item cannot be put on the menu');
   }
 }
 

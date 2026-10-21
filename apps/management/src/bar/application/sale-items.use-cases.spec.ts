@@ -50,6 +50,7 @@ const pastisBottle: SaleItem = {
   consumedQuantity: 1,
   basePriceCents: null,
   isActive: true,
+  menuPosition: null,
 };
 
 const entryTicket: SaleItem = {
@@ -60,6 +61,7 @@ const entryTicket: SaleItem = {
   consumedQuantity: null,
   basePriceCents: 500,
   isActive: true,
+  menuPosition: null,
 };
 
 const otherAssociationTicket: SaleItem = {
@@ -100,6 +102,7 @@ describe('CreateSaleItem', () => {
       consumedQuantity: 0.05,
       basePriceCents: 200,
       isActive: true,
+      menuPosition: null,
     });
   });
 
@@ -149,6 +152,7 @@ describe('CreateStocklessSaleItem', () => {
       consumedQuantity: null,
       basePriceCents: 800,
       isActive: true,
+      menuPosition: null,
     });
   });
 
