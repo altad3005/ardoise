@@ -11,6 +11,7 @@ const entryTicket: CatalogueSaleItem = {
   consumedQuantity: null,
   basePriceCents: 500,
   isActive: true,
+  menuPosition: null,
 };
 
 afterEach(() => {

@@ -21,6 +21,7 @@ const glass: CatalogueSaleItem = {
   consumedQuantity: 0.05,
   basePriceCents: 200,
   isActive: true,
+  menuPosition: 0,
 };
 
 const bottle: CatalogueSaleItem = {
@@ -30,6 +31,7 @@ const bottle: CatalogueSaleItem = {
   consumedQuantity: 1,
   basePriceCents: null,
   isActive: true,
+  menuPosition: null,
 };
 
 const saleItemsUrl = `/api/management/products/${ricard.id}/sale-items`;
@@ -48,7 +50,9 @@ describe('ProductSaleItems', () => {
     expect(glassItem).toHaveTextContent('Verre de pastis');
     expect(glassItem).toHaveTextContent('consomme 0,05 bouteille');
     expect(glassItem).toHaveTextContent('2,00 €');
+    expect(glassItem).toHaveTextContent('sur la carte');
     expect(bottleItem).toHaveTextContent('prix à fixer');
+    expect(bottleItem).toHaveTextContent('hors carte');
   });
 
   it('sets the price of an item', async () => {

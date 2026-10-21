@@ -8,6 +8,7 @@ export const Route = createFileRoute('/_app')({
 const navigationLinks = [
   { to: '/', label: 'Accueil', exact: true },
   { to: '/catalogue', label: 'Catalogue', exact: false },
+  { to: '/menu', label: 'Carte', exact: false },
 ] as const;
 
 function AppLayout() {
@@ -24,7 +25,7 @@ function AppLayout() {
         <div className="mb-8 hidden px-3 lg:block">
           <Brand />
         </div>
-        <ul className="grid grid-cols-2 lg:flex lg:flex-col lg:gap-1">
+        <ul className="grid grid-cols-3 lg:flex lg:flex-col lg:gap-1">
           {navigationLinks.map((link) => (
             <li key={link.to}>
               <Link
