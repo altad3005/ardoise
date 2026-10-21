@@ -9,6 +9,13 @@ export class InMemorySaleItemRepository extends SaleItemRepository {
     this.saleItems = saleItems.map((saleItem) => ({ ...saleItem }));
   }
 
+  async findAll(associationId: string): Promise<SaleItem[]> {
+    return this.saleItems
+      .filter((saleItem) => saleItem.associationId === associationId)
+      .toSorted((first, second) => first.name.localeCompare(second.name))
+      .map((saleItem) => ({ ...saleItem }));
+  }
+
   async findByProduct(associationId: string, productId: string): Promise<SaleItem[]> {
     return this.saleItems
       .filter(

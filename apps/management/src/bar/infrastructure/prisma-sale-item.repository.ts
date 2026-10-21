@@ -10,6 +10,14 @@ export class PrismaSaleItemRepository extends SaleItemRepository {
     super();
   }
 
+  async findAll(associationId: string): Promise<SaleItem[]> {
+    const saleItems = await this.prisma.saleItem.findMany({
+      where: { associationId },
+      orderBy: { name: 'asc' },
+    });
+    return saleItems.map(toSaleItem);
+  }
+
   async findByProduct(associationId: string, productId: string): Promise<SaleItem[]> {
     const saleItems = await this.prisma.saleItem.findMany({
       where: { associationId, productId },
