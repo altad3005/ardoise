@@ -25,6 +25,15 @@ export class InMemorySaleItemRepository extends SaleItemRepository {
       .map((saleItem) => ({ ...saleItem }));
   }
 
+  async findOnMenu(associationId: string): Promise<SaleItem[]> {
+    return this.saleItems
+      .filter(
+        (saleItem) => saleItem.associationId === associationId && saleItem.menuPosition !== null,
+      )
+      .toSorted((first, second) => (first.menuPosition ?? 0) - (second.menuPosition ?? 0))
+      .map((saleItem) => ({ ...saleItem }));
+  }
+
   async findById(associationId: string, saleItemId: string): Promise<SaleItem | null> {
     const saleItem = this.saleItems.find(
       (candidate) => candidate.id === saleItemId && candidate.associationId === associationId,
@@ -52,6 +61,15 @@ export class InMemorySaleItemRepository extends SaleItemRepository {
   async update(saleItem: SaleItem): Promise<void> {
     const index = this.saleItems.findIndex((candidate) => candidate.id === saleItem.id);
     this.saleItems[index] = { ...saleItem };
+  }
+
+  async replaceMenu(associationId: string, saleItemIds: readonly string[]): Promise<void> {
+    for (const saleItem of this.saleItems) {
+      if (saleItem.associationId === associationId) {
+        const position = saleItemIds.indexOf(saleItem.id);
+        saleItem.menuPosition = position === -1 ? null : position;
+      }
+    }
   }
 }
 

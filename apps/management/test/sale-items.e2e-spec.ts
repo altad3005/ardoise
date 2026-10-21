@@ -55,6 +55,7 @@ describe('Sale items', () => {
       consumedQuantity: 1,
       basePriceCents: null,
       isActive: true,
+      menuPosition: null,
     });
   });
 
@@ -74,6 +75,7 @@ describe('Sale items', () => {
       consumedQuantity: 0.05,
       basePriceCents: 200,
       isActive: true,
+      menuPosition: null,
     });
     expect((await listForProduct(RICARD)).map((saleItem) => saleItem.name)).toEqual([
       'Verre de pastis',

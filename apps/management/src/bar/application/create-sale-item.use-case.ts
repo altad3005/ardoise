@@ -25,7 +25,14 @@ export class CreateSaleItem {
     if (await this.saleItems.existsWithName(associationId, newSaleItem.name)) {
       throw new SaleItemNameAlreadyUsedError();
     }
-    const saleItem = { id: randomUUID(), associationId, productId, ...newSaleItem, isActive: true };
+    const saleItem = {
+      id: randomUUID(),
+      associationId,
+      productId,
+      ...newSaleItem,
+      isActive: true,
+      menuPosition: null,
+    };
     await this.saleItems.create(saleItem);
     return saleItem;
   }

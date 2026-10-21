@@ -5,6 +5,8 @@ export abstract class SaleItemRepository {
 
   abstract findStockless(associationId: string): Promise<SaleItem[]>;
 
+  abstract findOnMenu(associationId: string): Promise<SaleItem[]>;
+
   abstract findById(associationId: string, saleItemId: string): Promise<SaleItem | null>;
 
   abstract existsWithName(
@@ -16,4 +18,6 @@ export abstract class SaleItemRepository {
   abstract create(saleItem: SaleItem): Promise<void>;
 
   abstract update(saleItem: SaleItem): Promise<void>;
+
+  abstract replaceMenu(associationId: string, saleItemIds: readonly string[]): Promise<void>;
 }

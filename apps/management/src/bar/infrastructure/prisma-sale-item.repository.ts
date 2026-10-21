@@ -26,6 +26,14 @@ export class PrismaSaleItemRepository extends SaleItemRepository {
     return saleItems.map(toSaleItem);
   }
 
+  async findOnMenu(associationId: string): Promise<SaleItem[]> {
+    const saleItems = await this.prisma.saleItem.findMany({
+      where: { associationId, menuPosition: { not: null } },
+      orderBy: { menuPosition: 'asc' },
+    });
+    return saleItems.map(toSaleItem);
+  }
+
   async findById(associationId: string, saleItemId: string): Promise<SaleItem | null> {
     const saleItem = await this.prisma.saleItem.findFirst({
       where: { id: saleItemId, associationId },
@@ -61,6 +69,18 @@ export class PrismaSaleItemRepository extends SaleItemRepository {
         basePriceCents: saleItem.basePriceCents,
       },
     });
+  }
+
+  async replaceMenu(associationId: string, saleItemIds: readonly string[]): Promise<void> {
+    await this.prisma.$transaction([
+      this.prisma.saleItem.updateMany({
+        where: { associationId, menuPosition: { not: null } },
+        data: { menuPosition: null },
+      }),
+      ...saleItemIds.map((id, menuPosition) =>
+        this.prisma.saleItem.updateMany({ where: { id, associationId }, data: { menuPosition } }),
+      ),
+    ]);
   }
 }
 
