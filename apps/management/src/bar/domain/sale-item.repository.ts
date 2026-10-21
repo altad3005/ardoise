@@ -1,6 +1,8 @@
 import type { SaleItem } from './sale-item.js';
 
 export abstract class SaleItemRepository {
+  abstract findAll(associationId: string): Promise<SaleItem[]>;
+
   abstract findByProduct(associationId: string, productId: string): Promise<SaleItem[]>;
 
   abstract findStockless(associationId: string): Promise<SaleItem[]>;

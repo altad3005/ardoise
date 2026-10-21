@@ -12,6 +12,7 @@ import type { AssociationContext } from '../../association-context/association-c
 import { CurrentContext, RequireRoles } from '../../association-context/decorators.js';
 import { CreateSaleItem } from '../application/create-sale-item.use-case.js';
 import { CreateStocklessSaleItem } from '../application/create-stockless-sale-item.use-case.js';
+import { ListSaleItems } from '../application/list-sale-items.use-case.js';
 import { ListProductSaleItems } from '../application/list-product-sale-items.use-case.js';
 import { ListStocklessSaleItems } from '../application/list-stockless-sale-items.use-case.js';
 import { UpdateSaleItem } from '../application/update-sale-item.use-case.js';
@@ -22,12 +23,19 @@ const idPipe = new ParseUUIDPipe({ errorHttpStatusCode: HttpStatus.NOT_FOUND });
 @Controller()
 export class SaleItemsController {
   constructor(
+    private readonly listSaleItems: ListSaleItems,
     private readonly listProductSaleItems: ListProductSaleItems,
     private readonly listStocklessSaleItems: ListStocklessSaleItems,
     private readonly createSaleItem: CreateSaleItem,
     private readonly createStocklessSaleItem: CreateStocklessSaleItem,
     private readonly updateSaleItem: UpdateSaleItem,
   ) {}
+
+  @Get('sale-items')
+  async list(@CurrentContext() context: AssociationContext): Promise<CatalogueSaleItem[]> {
+    const saleItems = await this.listSaleItems.execute(context.associationId);
+    return saleItems.map(toCatalogueSaleItem);
+  }
 
   @Get('products/:productId/sale-items')
   async listForProduct(

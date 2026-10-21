@@ -13,6 +13,7 @@ import { GetMenu } from './application/get-menu.use-case.js';
 import { ListPackagings } from './application/list-packagings.use-case.js';
 import { ListProductSaleItems } from './application/list-product-sale-items.use-case.js';
 import { ListProducts } from './application/list-products.use-case.js';
+import { ListSaleItems } from './application/list-sale-items.use-case.js';
 import { ListStocklessSaleItems } from './application/list-stockless-sale-items.use-case.js';
 import { UpdateSaleItem } from './application/update-sale-item.use-case.js';
 import { PackagingRepository } from './domain/packaging.repository.js';
@@ -37,6 +38,7 @@ import { PrismaSaleItemRepository } from './infrastructure/prisma-sale-item.repo
     ListPackagings,
     CreatePackaging,
     DeletePackaging,
+    ListSaleItems,
     ListProductSaleItems,
     ListStocklessSaleItems,
     CreateSaleItem,

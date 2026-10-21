@@ -12,6 +12,7 @@ import { ActivateProduct } from './activate-product.use-case.js';
 import { CreateSaleItem } from './create-sale-item.use-case.js';
 import { CreateStocklessSaleItem } from './create-stockless-sale-item.use-case.js';
 import { ListProductSaleItems } from './list-product-sale-items.use-case.js';
+import { ListSaleItems } from './list-sale-items.use-case.js';
 import { ListStocklessSaleItems } from './list-stockless-sale-items.use-case.js';
 import { UpdateSaleItem } from './update-sale-item.use-case.js';
 
@@ -186,6 +187,15 @@ describe('ListProductSaleItems', () => {
     await expect(
       new ListProductSaleItems(products, saleItems).execute(associationId, otherAssociationBeer.id),
     ).rejects.toBeInstanceOf(ProductNotFoundError);
+  });
+});
+
+describe('ListSaleItems', () => {
+  it('lists every item of the association by name', async () => {
+    expect(await new ListSaleItems(saleItems).execute(associationId)).toEqual([
+      entryTicket,
+      pastisBottle,
+    ]);
   });
 });
 

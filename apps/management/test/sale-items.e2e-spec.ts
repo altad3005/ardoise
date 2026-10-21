@@ -128,6 +128,18 @@ describe('Sale items', () => {
     expect(listed).toEqual([ticket]);
   });
 
+  it('lists every item of the association by name', async () => {
+    const ticket = saleItemSchema.parse(
+      (await createStockless({ name: 'Entrée soirée', basePriceCents: 500 })).body,
+    );
+    const [bottle] = await listForProduct(RICARD);
+
+    const response = await request(server()).get('/sale-items');
+
+    expect(response.status).toBe(200);
+    expect(saleItemListSchema.parse(response.body)).toEqual([ticket, bottle]);
+  });
+
   it('sets the price of the item created with the product', async () => {
     const [bottle] = await listForProduct(RICARD);
 
@@ -183,6 +195,7 @@ describe('Sale items for a viewer', () => {
   });
 
   it('lets a viewer list items', async () => {
+    expect((await request(app.getHttpServer()).get('/sale-items')).status).toBe(200);
     expect((await request(app.getHttpServer()).get('/stockless-sale-items')).status).toBe(200);
     expect((await request(app.getHttpServer()).get(`/products/${RICARD}/sale-items`)).status).toBe(
       200,
