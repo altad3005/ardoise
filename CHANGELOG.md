@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.7.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.6.0...ardoise-v0.7.0) (2026-10-21)
+
+
+### Features
+
+* **bar:** create and edit sale items, with or without stock ([abaff11](https://github.com/altad3005/ardoise/commit/abaff11b839145975c2ff0adada8a2309a897433))
+* **types:** add sale item schemas ([af10885](https://github.com/altad3005/ardoise/commit/af10885b6d95b5352134fc07120f56c04f427aa1))
+* **web:** manage sale items from the catalogue ([8482da7](https://github.com/altad3005/ardoise/commit/8482da70514a83508e6ad9f3becc7f7afdfd89f6))
+
 ## [0.6.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.5.1...ardoise-v0.6.0) (2026-10-20)
 
 
