@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.7.0...ardoise-v0.8.0) (2026-10-21)
+
+
+### Features
+
+* **web:** add the Ardoise logo and app icons ([6982a6a](https://github.com/altad3005/ardoise/commit/6982a6acf8dbb6c598a6d6219c2dd78d9049be76))
+
 ## [0.7.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.6.0...ardoise-v0.7.0) (2026-10-21)
 
 
