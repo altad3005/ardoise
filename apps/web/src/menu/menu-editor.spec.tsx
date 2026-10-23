@@ -113,24 +113,41 @@ describe('MenuEditor', () => {
     expect(fetchMock).toHaveBeenCalledWith(menuUrl, composition([pastisGlass.id]));
   });
 
-  it('offers only the active items off the menu, and adds one at the end', async () => {
+  it('searches only the active items off the menu', async () => {
+    stubMenuApi();
+    renderWithQueryClient(<MenuEditor />);
+
+    await userEvent.type(await screen.findByRole('combobox', { name: 'Ajouter un article' }), 't');
+
+    const suggestions = screen.getAllByRole('option');
+    expect(suggestions).toHaveLength(1);
+    expect(suggestions[0]).toHaveTextContent('Entrée soirée');
+    expect(suggestions[0]).toHaveTextContent('5,00 €');
+  });
+
+  it('adds the chosen item at the end of the menu', async () => {
     const fetchMock = stubMenuApi();
     renderWithQueryClient(<MenuEditor />);
-    const select = await screen.findByRole('combobox', { name: 'Ajouter un article' });
 
-    expect(
-      within(select)
-        .getAllByRole('option')
-        .map((option) => option.textContent),
-    ).toEqual(['Choisir un article', 'Entrée soirée']);
-
-    await userEvent.selectOptions(select, 'Entrée soirée');
-    await userEvent.click(screen.getByRole('button', { name: 'Ajouter' }));
+    await userEvent.type(
+      await screen.findByRole('combobox', { name: 'Ajouter un article' }),
+      'entree',
+    );
+    await userEvent.click(screen.getByRole('option', { name: /Entrée soirée/ }));
 
     expect(fetchMock).toHaveBeenCalledWith(
       menuUrl,
       composition([beer.id, pastisGlass.id, entryTicket.id]),
     );
+  });
+
+  it('places the search above the menu', async () => {
+    stubMenuApi();
+    renderWithQueryClient(<MenuEditor />);
+
+    const search = await screen.findByRole('combobox', { name: 'Ajouter un article' });
+    const menu = screen.getByRole('list', { name: 'Carte de la caisse' });
+    expect(search.compareDocumentPosition(menu) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it('warns when the menu could not be saved', async () => {
