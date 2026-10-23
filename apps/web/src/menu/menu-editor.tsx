@@ -1,13 +1,12 @@
 import type { CatalogueSaleItem } from '@ardoise/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
 import { composeMenu, fetchMenu, fetchSaleItems } from '../api/sale-items.ts';
 import { formatPrice } from '../forms/number-format.ts';
 import { Alert } from '../ui/alert.tsx';
 import { Badge } from '../ui/badge.tsx';
 import { Button } from '../ui/button.tsx';
 import { Card } from '../ui/card.tsx';
-import { SelectField } from '../ui/select-field.tsx';
+import { SearchCombobox } from '../ui/search-combobox.tsx';
 import {
   allSaleItemsQueryKey,
   menuQueryKey,
@@ -22,6 +21,7 @@ export function MenuEditor() {
   const saleItems = useQuery({ queryKey: allSaleItemsQueryKey, queryFn: fetchSaleItems });
   const composition = useMutation({
     mutationFn: (saleItemIds: string[]) => composeMenu({ saleItemIds }),
+    onSuccess: (composedMenu) => queryClient.setQueryData(menuQueryKey, composedMenu),
     onSettled: () => queryClient.invalidateQueries({ queryKey: saleItemsQueryKey }),
   });
 
@@ -45,6 +45,24 @@ export function MenuEditor() {
   return (
     <div className="grid gap-3">
       {composition.isError && <Alert>{errorMessage}</Alert>}
+      <SearchCombobox
+        id="menu-new-item"
+        label="Ajouter un article"
+        placeholder="Rechercher un article…"
+        options={offMenuItems.map((saleItem) => ({
+          id: saleItem.id,
+          label: saleItem.name,
+          detail:
+            saleItem.basePriceCents === null
+              ? 'prix à fixer'
+              : formatPrice(saleItem.basePriceCents),
+        }))}
+        onSelect={(saleItemId) => {
+          if (!composition.isPending) {
+            composition.mutate([...menuIds, saleItemId]);
+          }
+        }}
+      />
       <Card>
         {menu.data.length === 0 ? (
           <p className="px-4 py-3 text-ink-muted">Aucun article sur la carte</p>
@@ -66,13 +84,6 @@ export function MenuEditor() {
           </ol>
         )}
       </Card>
-      {offMenuItems.length > 0 && (
-        <AddToMenu
-          offMenuItems={offMenuItems}
-          isLocked={composition.isPending}
-          onAdd={(saleItemId) => composition.mutate([...menuIds, saleItemId])}
-        />
-      )}
     </div>
   );
 }
@@ -134,45 +145,5 @@ function MenuLine({
         </Button>
       </div>
     </li>
-  );
-}
-
-interface AddToMenuProps {
-  offMenuItems: CatalogueSaleItem[];
-  isLocked: boolean;
-  onAdd: (saleItemId: string) => void;
-}
-
-function AddToMenu({ offMenuItems, isLocked, onAdd }: AddToMenuProps) {
-  const [selectedId, setSelectedId] = useState('');
-
-  return (
-    <form
-      className="flex flex-wrap items-end gap-3"
-      onSubmit={(event) => {
-        event.preventDefault();
-        onAdd(selectedId);
-        setSelectedId('');
-      }}
-    >
-      <div className="min-w-0 flex-1 basis-48">
-        <SelectField
-          id="menu-new-item"
-          label="Ajouter un article"
-          value={selectedId}
-          onChange={(event) => setSelectedId(event.target.value)}
-        >
-          <option value="">Choisir un article</option>
-          {offMenuItems.map((saleItem) => (
-            <option key={saleItem.id} value={saleItem.id}>
-              {saleItem.name}
-            </option>
-          ))}
-        </SelectField>
-      </div>
-      <Button type="submit" variant="secondary" disabled={selectedId === '' || isLocked}>
-        Ajouter
-      </Button>
-    </form>
   );
 }
