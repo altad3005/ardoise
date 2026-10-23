@@ -8,7 +8,7 @@ import { Button } from '../ui/button.tsx';
 import { Card } from '../ui/card.tsx';
 import { classNames } from '../ui/class-names.ts';
 import { PageHeader } from '../ui/page-header.tsx';
-import { ToggleButton } from '../ui/toggle-button.tsx';
+import { SearchCombobox } from '../ui/search-combobox.tsx';
 import { useMediaQuery } from '../ui/use-media-query.ts';
 import { categoryLabels } from './category-labels.ts';
 import { NewProductForm } from './new-product-form.tsx';
@@ -25,7 +25,6 @@ interface ActivationChange {
 }
 
 export function CataloguePage() {
-  const [showOnlyActive, setShowOnlyActive] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [isCreatingStockless, setIsCreatingStockless] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
@@ -49,11 +48,15 @@ export function CataloguePage() {
     return <Alert>{errorMessage}</Alert>;
   }
 
-  const shownProducts = showOnlyActive
-    ? products.data.filter((product) => product.isActive)
-    : products.data;
+  const activeProducts = products.data.filter((product) => product.isActive);
+  const inactiveProducts = products.data.filter((product) => !product.isActive);
   const pendingProductId = activation.isPending ? activation.variables.productId : null;
-  const selectedProduct = products.data.find((product) => product.id === selectedProductId);
+  const selectedProduct = activeProducts.find((product) => product.id === selectedProductId);
+  const activate = (productId: string) =>
+    activation.mutate(
+      { productId, activate: true },
+      { onSuccess: () => setSelectedProductId(productId) },
+    );
 
   return (
     <section>
@@ -61,12 +64,6 @@ export function CataloguePage() {
         title="Catalogue"
         actions={
           <>
-            <ToggleButton isSelected={!showOnlyActive} onClick={() => setShowOnlyActive(false)}>
-              Tous
-            </ToggleButton>
-            <ToggleButton isSelected={showOnlyActive} onClick={() => setShowOnlyActive(true)}>
-              Actifs
-            </ToggleButton>
             <Button
               variant="secondary"
               onClick={() => setIsCreatingStockless(true)}
@@ -91,12 +88,34 @@ export function CataloguePage() {
       )}
       <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start lg:gap-6">
         <div>
-          {shownProducts.length === 0 && <p className="text-ink-muted">Aucun produit actif</p>}
+          <div className="mb-6">
+            <SearchCombobox
+              id="product-to-activate"
+              label="Activer un produit"
+              placeholder="Rechercher un produit du catalogue…"
+              options={inactiveProducts.map((product) => ({
+                id: product.id,
+                label: product.name,
+                detail: `${categoryLabels[product.category]} · ${product.isShared ? 'commun' : "propre à l'association"}`,
+              }))}
+              onSelect={(productId) => {
+                if (!activation.isPending) {
+                  activate(productId);
+                }
+              }}
+            />
+          </div>
+          {activeProducts.length === 0 && (
+            <p className="mb-6 text-ink-muted">
+              Aucun produit activé : recherchez un produit du catalogue commun pour l'activer, ou
+              créez le vôtre.
+            </p>
+          )}
           {productCategorySchema.options.map((category) => (
             <CategorySection
               key={category}
               title={categoryLabels[category]}
-              products={shownProducts.filter((product) => product.category === category)}
+              products={activeProducts.filter((product) => product.category === category)}
               pendingProductId={pendingProductId}
               isLocked={activation.isPending}
               selectedProductId={selectedProductId}
@@ -104,8 +123,8 @@ export function CataloguePage() {
               onSelect={(product) =>
                 setSelectedProductId(product.id === selectedProductId ? null : product.id)
               }
-              onToggle={(product) =>
-                activation.mutate({ productId: product.id, activate: !product.isActive })
+              onDeactivate={(product) =>
+                activation.mutate({ productId: product.id, activate: false })
               }
             />
           ))}
@@ -129,7 +148,7 @@ interface CategorySectionProps {
   selectedProductId: string | null;
   showsPanelInline: boolean;
   onSelect: (product: CatalogueProduct) => void;
-  onToggle: (product: CatalogueProduct) => void;
+  onDeactivate: (product: CatalogueProduct) => void;
 }
 
 function CategorySection({
@@ -140,7 +159,7 @@ function CategorySection({
   selectedProductId,
   showsPanelInline,
   onSelect,
-  onToggle,
+  onDeactivate,
 }: CategorySectionProps) {
   if (products.length === 0) {
     return null;
@@ -176,17 +195,13 @@ function CategorySection({
                     <Badge tone="accent">propre à l'association</Badge>
                   )}
                   <Button
-                    variant={product.isActive ? 'secondary' : 'primary'}
+                    variant="secondary"
                     disabled={isLocked}
-                    aria-busy={product.id === pendingProductId}
-                    aria-label={`${product.isActive ? 'Désactiver' : 'Activer'} ${product.name}`}
-                    onClick={() => onToggle(product)}
+                    isPending={product.id === pendingProductId}
+                    aria-label={`Désactiver ${product.name}`}
+                    onClick={() => onDeactivate(product)}
                   >
-                    {product.id === pendingProductId
-                      ? '…'
-                      : product.isActive
-                        ? 'Désactiver'
-                        : 'Activer'}
+                    Désactiver
                   </Button>
                 </div>
                 {isSelected && showsPanelInline && (
