@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.9.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.8.0...ardoise-v0.9.0) (2026-10-23)
+
+
+### Features
+
+* **bar:** compose the checkout menu and its display order ([2bb05be](https://github.com/altad3005/ardoise/commit/2bb05be34628f2c73434e9069f15ec6d5c51c191))
+* **bar:** list every sale item of the association ([03a79ae](https://github.com/altad3005/ardoise/commit/03a79aec3d39d9de91e4456e395e1d5c256537b0))
+* **types:** add checkout menu composition schema ([bc3d692](https://github.com/altad3005/ardoise/commit/bc3d692dd8d9b8fad0eaaf8ffe8f874dafb9bd5d))
+* **web:** compose the checkout menu on its own page ([0cf2c08](https://github.com/altad3005/ardoise/commit/0cf2c08242b7147831cbdb868d20b9bdc9bf4709))
+
 ## [0.8.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.7.0...ardoise-v0.8.0) (2026-10-21)
 
 
