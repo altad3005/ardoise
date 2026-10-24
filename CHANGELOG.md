@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.10.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.9.0...ardoise-v0.10.0) (2026-10-24)
+
+
+### Features
+
+* **web:** add a search field suggesting options as you type ([376a0f5](https://github.com/altad3005/ardoise/commit/376a0f5ff777824d92bcd2811369d7b369a9adc7))
+* **web:** add items to the checkout menu from a search ([9bb2482](https://github.com/altad3005/ardoise/commit/9bb2482183ddf6fce5fae39b3540a9557670a636))
+* **web:** list only activated products and activate others from a search ([aae7d5f](https://github.com/altad3005/ardoise/commit/aae7d5f2bf5dd9b232a54ab3fe6813180db53a84))
+
 ## [0.9.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.8.0...ardoise-v0.9.0) (2026-10-23)
 
 
