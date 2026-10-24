@@ -10,6 +10,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import {
   accountChangesSchema,
@@ -98,7 +99,7 @@ async function rethrowAsHttp<T>(operation: Promise<T>): Promise<T> {
       throw new ConflictException('An account already uses this name');
     }
     if (error instanceof AccountHasMovementsError) {
-      throw new ConflictException('The account already has movements');
+      throw new UnprocessableEntityException('The account already has movements');
     }
     throw error;
   }
