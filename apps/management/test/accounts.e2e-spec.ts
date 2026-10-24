@@ -11,6 +11,8 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { AppModule } from '../src/app.module.js';
 import { DEMO_ASSOCIATION_ID } from '../src/association-context/demo-association-context.source.js';
 import { PrismaService } from '../src/database/prisma.service.js';
+import { AccountNameAlreadyUsedError } from '../src/treasury/domain/account.js';
+import { AccountRepository } from '../src/treasury/domain/account.repository.js';
 
 const OTHER_ASSOCIATION = 'b0000000-0000-4000-8000-000000000002';
 const FOREIGN_ACCOUNT = 'e0000000-0000-4000-8000-000000000099';
@@ -131,6 +133,22 @@ describe('Treasury accounts', () => {
 
     expect((await update(FOREIGN_ACCOUNT, { name: 'Volé' })).status).toBe(404);
     expect(accountListSchema.parse((await list()).body)).toEqual([]);
+  });
+
+  it('reports a name taken by a concurrent creation as already used', async () => {
+    const accounts = app.get(AccountRepository, { strict: false });
+    const account = {
+      associationId: DEMO_ASSOCIATION_ID,
+      name: 'Caisse du bar',
+      type: 'CASH' as const,
+      openingBalanceCents: 0,
+      isActive: true,
+    };
+    await accounts.create({ ...account, id: 'e0000000-0000-4000-8000-000000000010' });
+
+    await expect(
+      accounts.create({ ...account, id: 'e0000000-0000-4000-8000-000000000011' }),
+    ).rejects.toBeInstanceOf(AccountNameAlreadyUsedError);
   });
 
   it('answers 404 for a malformed account id', async () => {
