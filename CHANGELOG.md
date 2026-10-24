@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.10.0...ardoise-v0.11.0) (2026-10-24)
+
+
+### Features
+
+* **web:** group the main navigation with icons ([de9512f](https://github.com/altad3005/ardoise/commit/de9512f6ec5922cd7f2d9f94f7b78c30334eb182))
+
 ## [0.10.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.9.0...ardoise-v0.10.0) (2026-10-24)
 
 
