@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { parseDecimal, parsePriceInCents, parseQuantity } from './number-input.ts';
+import {
+  parseDecimal,
+  parsePriceInCents,
+  parseQuantity,
+  parseSignedPriceInCents,
+} from './number-input.ts';
 
 describe('parseDecimal', () => {
   it('reads a decimal comma or point', () => {
@@ -41,5 +46,22 @@ describe('parsePriceInCents', () => {
     expect(parsePriceInCents('2,005')).toBeNaN();
     expect(parsePriceInCents('-2')).toBeNaN();
     expect(parsePriceInCents('')).toBeNaN();
+  });
+});
+
+describe('parseSignedPriceInCents', () => {
+  it('reads a negative amount with a hyphen or a minus sign', () => {
+    expect(parseSignedPriceInCents('-45,60')).toBe(-4560);
+    expect(parseSignedPriceInCents('− 45,60 €')).toBe(-4560);
+    expect(parseSignedPriceInCents('-45.6')).toBe(-4560);
+  });
+
+  it('reads a positive amount', () => {
+    expect(parseSignedPriceInCents('150')).toBe(15000);
+  });
+
+  it('is not a number when the sign is repeated or alone', () => {
+    expect(parseSignedPriceInCents('--3')).toBeNaN();
+    expect(parseSignedPriceInCents('-')).toBeNaN();
   });
 });
