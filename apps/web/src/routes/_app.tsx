@@ -1,15 +1,33 @@
 import { Link, Outlet, createFileRoute } from '@tanstack/react-router';
+import { ClipboardList, House, Package, UserPlus, type LucideIcon } from 'lucide-react';
 import { Logo } from '../ui/logo.tsx';
 
 export const Route = createFileRoute('/_app')({
   component: AppLayout,
 });
 
-const navigationLinks = [
-  { to: '/', label: 'Accueil', exact: true },
-  { to: '/catalogue', label: 'Catalogue', exact: false },
-  { to: '/menu', label: 'Carte', exact: false },
-] as const;
+interface NavigationLink {
+  to: '/' | '/catalogue' | '/menu';
+  label: string;
+  icon: LucideIcon;
+  exact: boolean;
+}
+
+interface NavigationGroup {
+  title?: string;
+  links: NavigationLink[];
+}
+
+const navigationGroups: NavigationGroup[] = [
+  { links: [{ to: '/', label: 'Accueil', icon: House, exact: true }] },
+  {
+    title: 'Bar',
+    links: [
+      { to: '/catalogue', label: 'Catalogue', icon: Package, exact: false },
+      { to: '/menu', label: 'Carte', icon: ClipboardList, exact: false },
+    ],
+  },
+];
 
 function AppLayout() {
   return (
@@ -20,25 +38,30 @@ function AppLayout() {
       </header>
       <nav
         aria-label="Navigation principale"
-        className="fixed inset-x-0 bottom-0 z-10 border-t border-line bg-surface lg:static lg:flex lg:w-60 lg:shrink-0 lg:flex-col lg:border-t-0 lg:border-r lg:px-4 lg:py-6"
+        className="fixed inset-x-0 bottom-0 z-10 border-t border-line bg-surface lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-64 lg:overflow-y-auto lg:shrink-0 lg:flex-col lg:border-t-0 lg:border-r lg:px-3 lg:py-5"
       >
-        <div className="mb-8 hidden px-3 lg:block">
+        <div className="mb-6 hidden px-3 lg:block">
           <Brand />
         </div>
-        <ul className="grid grid-cols-3 lg:flex lg:flex-col lg:gap-1">
-          {navigationLinks.map((link) => (
-            <li key={link.to}>
-              <Link
-                to={link.to}
-                activeOptions={{ exact: link.exact }}
-                className="flex min-h-14 items-center justify-center font-semibold focus-visible:-outline-offset-4 text-ink-muted hover:text-ink aria-[current=page]:text-accent lg:min-h-11 lg:justify-start lg:rounded-md lg:px-3 lg:aria-[current=page]:bg-accent-soft"
-              >
-                {link.label}
-              </Link>
+        <ul className="grid grid-cols-3 lg:flex lg:flex-col lg:gap-4">
+          {navigationGroups.map((group) => (
+            <li key={group.title ?? 'main'} className="contents lg:block">
+              {group.title && (
+                <p className="hidden px-3 pb-1.5 text-xs font-bold tracking-wider text-ink-muted uppercase lg:block">
+                  {group.title}
+                </p>
+              )}
+              <ul className="contents lg:flex lg:flex-col lg:gap-0.5">
+                {group.links.map((link) => (
+                  <li key={link.to}>
+                    <NavigationItem link={link} />
+                  </li>
+                ))}
+              </ul>
             </li>
           ))}
         </ul>
-        <div className="mt-auto hidden lg:block">
+        <div className="mt-auto hidden border-t border-line pt-3 lg:block">
           <RegisterLink />
         </div>
       </nav>
@@ -46,6 +69,20 @@ function AppLayout() {
         <Outlet />
       </main>
     </div>
+  );
+}
+
+function NavigationItem({ link }: { link: NavigationLink }) {
+  const Icon = link.icon;
+  return (
+    <Link
+      to={link.to}
+      activeOptions={{ exact: link.exact }}
+      className="flex min-h-14 flex-col items-center justify-center gap-1 text-xs font-semibold text-ink-muted hover:text-ink focus-visible:-outline-offset-4 aria-[current=page]:text-accent lg:min-h-10 lg:flex-row lg:justify-start lg:gap-3 lg:rounded-md lg:px-3 lg:text-base lg:aria-[current=page]:bg-accent-soft"
+    >
+      <Icon aria-hidden="true" className="size-5 shrink-0" />
+      {link.label}
+    </Link>
   );
 }
 
@@ -61,8 +98,9 @@ function RegisterLink() {
   return (
     <Link
       to="/register"
-      className="ml-auto inline-flex min-h-11 items-center rounded-md px-3 font-semibold text-ink-muted hover:bg-surface-raised hover:text-ink"
+      className="ml-auto inline-flex min-h-11 items-center gap-3 rounded-md px-3 font-semibold text-ink-muted hover:bg-surface-raised hover:text-ink"
     >
+      <UserPlus aria-hidden="true" className="hidden size-5 lg:block" />
       Créer un compte
     </Link>
   );
