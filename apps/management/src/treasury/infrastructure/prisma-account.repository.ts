@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '../../database/generated/prisma/client.js';
 import { PrismaService } from '../../database/prisma.service.js';
-import type { Account, AccountWithBalance } from '../domain/account.js';
+import {
+  AccountNameAlreadyUsedError,
+  type Account,
+  type AccountWithBalance,
+} from '../domain/account.js';
 import { AccountRepository } from '../domain/account.repository.js';
 
 @Injectable()
@@ -45,11 +50,24 @@ export class PrismaAccountRepository extends AccountRepository {
   }
 
   async create(account: Account): Promise<void> {
-    await this.prisma.account.create({ data: account });
+    await rethrowNameConflict(this.prisma.account.create({ data: account }));
   }
 
   async update({ id, associationId, ...account }: Account): Promise<void> {
-    await this.prisma.account.update({ where: { id, associationId }, data: account });
+    await rethrowNameConflict(
+      this.prisma.account.update({ where: { id, associationId }, data: account }),
+    );
+  }
+}
+
+async function rethrowNameConflict(operation: Promise<unknown>): Promise<void> {
+  try {
+    await operation;
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      throw new AccountNameAlreadyUsedError();
+    }
+    throw error;
   }
 }
 
