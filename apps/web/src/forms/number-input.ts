@@ -1,5 +1,6 @@
 const fractionPattern = /^(\d+(?:[.,]\d+)?)\s*\/\s*(\d+(?:[.,]\d+)?)$/;
 const pricePattern = /^(\d+)(?:[.,](\d{1,2}))?\s*€?$/;
+const negativeSignPattern = /^[-−]\s*/;
 
 export function parseDecimal(value: string): number {
   const trimmed = value.trim();
@@ -21,4 +22,10 @@ export function parsePriceInCents(value: string): number {
     return Number.NaN;
   }
   return Number(price[1]) * 100 + Number((price[2] ?? '').padEnd(2, '0'));
+}
+
+export function parseSignedPriceInCents(value: string): number {
+  const trimmed = value.trim();
+  const unsigned = trimmed.replace(negativeSignPattern, '');
+  return unsigned === trimmed ? parsePriceInCents(unsigned) : -parsePriceInCents(unsigned);
 }
