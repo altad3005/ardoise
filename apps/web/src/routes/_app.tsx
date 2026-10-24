@@ -1,5 +1,5 @@
 import { Link, Outlet, createFileRoute } from '@tanstack/react-router';
-import { ClipboardList, House, Package, UserPlus, type LucideIcon } from 'lucide-react';
+import { ClipboardList, House, Landmark, Package, UserPlus, type LucideIcon } from 'lucide-react';
 import { Logo } from '../ui/logo.tsx';
 
 export const Route = createFileRoute('/_app')({
@@ -7,7 +7,7 @@ export const Route = createFileRoute('/_app')({
 });
 
 interface NavigationLink {
-  to: '/' | '/catalogue' | '/menu';
+  to: '/' | '/catalogue' | '/menu' | '/comptes';
   label: string;
   icon: LucideIcon;
   exact: boolean;
@@ -27,6 +27,10 @@ const navigationGroups: NavigationGroup[] = [
       { to: '/menu', label: 'Carte', icon: ClipboardList, exact: false },
     ],
   },
+  {
+    title: 'Trésorerie',
+    links: [{ to: '/comptes', label: 'Comptes', icon: Landmark, exact: false }],
+  },
 ];
 
 function AppLayout() {
@@ -43,7 +47,7 @@ function AppLayout() {
         <div className="mb-6 hidden px-3 lg:block">
           <Brand />
         </div>
-        <ul className="grid grid-cols-3 lg:flex lg:flex-col lg:gap-4">
+        <ul className="grid grid-cols-4 lg:flex lg:flex-col lg:gap-4">
           {navigationGroups.map((group) => (
             <li key={group.title ?? 'main'} className="contents lg:block">
               {group.title && (
