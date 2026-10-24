@@ -75,3 +75,23 @@ model SaleItem {
   @@map("sale_items")
   @@schema("bar")
 }
+
+enum AccountType {
+  BANK
+  CASH
+
+  @@schema("treasury")
+}
+
+model Account {
+  id                  String      @id @db.Uuid
+  associationId       String      @map("association_id") @db.Uuid
+  name                String
+  type                AccountType
+  openingBalanceCents Int         @map("opening_balance_cents")
+  isActive            Boolean     @default(true) @map("is_active")
+
+  @@unique([associationId, name])
+  @@map("accounts")
+  @@schema("treasury")
+}
