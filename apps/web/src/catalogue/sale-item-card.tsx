@@ -2,7 +2,7 @@ import type { CatalogueSaleItem, SaleItemChanges } from '@ardoise/types';
 import { useState } from 'react';
 import { formatPrice, formatQuantity } from '../forms/number-format.ts';
 import { Badge } from '../ui/badge.tsx';
-import { Button } from '../ui/button.tsx';
+import { EditButton } from '../ui/edit-button.tsx';
 import { SaleItemForm } from './sale-item-form.tsx';
 
 interface SaleItemCardProps {
@@ -50,13 +50,7 @@ export function SaleItemCard({ saleItem, stockUnit, save }: SaleItemCardProps) {
             <Badge tone="accent">sur la carte</Badge>
           )}
         </span>
-        <Button
-          variant="secondary"
-          aria-label={`Modifier ${saleItem.name}`}
-          onClick={() => setIsEditing(true)}
-        >
-          Modifier
-        </Button>
+        <EditButton itemName={saleItem.name} onClick={() => setIsEditing(true)} />
       </div>
     </li>
   );

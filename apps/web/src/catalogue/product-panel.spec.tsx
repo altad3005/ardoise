@@ -28,6 +28,11 @@ const sharedCrate: PurchasePackaging = {
   isShared: true,
 };
 
+const renderPanel = () =>
+  renderWithQueryClient(
+    <ProductPanel product={jupiler} isDeactivating={false} onDeactivate={() => {}} />,
+  );
+
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -35,7 +40,7 @@ afterEach(() => {
 describe('ProductPanel', () => {
   it('lists the packagings with their unit count', async () => {
     stubFetch((url) => jsonResponse(url.endsWith('/packagings') ? [ownPack, sharedCrate] : []));
-    renderWithQueryClient(<ProductPanel product={jupiler} />);
+    renderPanel();
 
     const packagings = await screen.findByRole('list', { name: "Conditionnements d'achat" });
     const [ownItem, sharedItem] = within(packagings).getAllByRole('listitem');
@@ -49,7 +54,7 @@ describe('ProductPanel', () => {
         ? new Response(null, { status: 204 })
         : jsonResponse(url.endsWith('/packagings') ? [ownPack, sharedCrate] : []),
     );
-    renderWithQueryClient(<ProductPanel product={jupiler} />);
+    renderPanel();
 
     await userEvent.click(await screen.findByRole('button', { name: 'Supprimer pack de 12' }));
 
@@ -64,14 +69,14 @@ describe('ProductPanel', () => {
 
   it('says when the product has no packaging', async () => {
     stubFetch(() => jsonResponse([]));
-    renderWithQueryClient(<ProductPanel product={jupiler} />);
+    renderPanel();
 
     expect(await screen.findByText('Aucun conditionnement : achat à l’unité')).toBeInTheDocument();
   });
 
   it('opens the packaging form', async () => {
     stubFetch(() => jsonResponse([]));
-    renderWithQueryClient(<ProductPanel product={jupiler} />);
+    renderPanel();
 
     await userEvent.click(await screen.findByRole('button', { name: '+ Conditionnement' }));
 

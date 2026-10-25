@@ -14,10 +14,12 @@ const errorMessage = 'Une erreur est survenue, réessayez plus tard';
 
 interface ProductPanelProps {
   product: CatalogueProduct;
+  isDeactivating: boolean;
+  onDeactivate: () => void;
 }
 
 // TODO: hide packaging and sale item editing from members without the stock manager role (Accounts and associations milestone)
-export function ProductPanel({ product }: ProductPanelProps) {
+export function ProductPanel({ product, isDeactivating, onDeactivate }: ProductPanelProps) {
   const [isAdding, setIsAdding] = useState(false);
   const queryClient = useQueryClient();
   const queryKey = packagingsQueryKey(product.id);
@@ -69,6 +71,11 @@ export function ProductPanel({ product }: ProductPanelProps) {
         )}
       </section>
       <ProductSaleItems product={product} />
+      <div className="flex justify-end border-t border-line pt-3">
+        <Button variant="danger" isPending={isDeactivating} onClick={onDeactivate}>
+          Désactiver ce produit
+        </Button>
+      </div>
     </div>
   );
 }
