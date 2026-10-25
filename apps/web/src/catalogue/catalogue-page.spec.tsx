@@ -1,5 +1,5 @@
 import type { CatalogueProduct } from '@ardoise/types';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { jsonResponse, renderWithQueryClient, stubFetch } from '../test-utils.tsx';
@@ -34,7 +34,7 @@ describe('Catalogue page', () => {
   it('opens and closes the panel of a product', async () => {
     stubFetch((url) => jsonResponse(url.endsWith('/products') ? [jupiler] : []));
     renderWithQueryClient(<CataloguePage />);
-    const productButton = await screen.findByRole('button', { name: 'Jupiler 25 cl bouteille' });
+    const productButton = await screen.findByRole('button', { name: 'Modifier Jupiler 25 cl' });
 
     await userEvent.click(productButton);
 
@@ -65,7 +65,7 @@ describe('Catalogue page', () => {
     renderWithQueryClient(<CataloguePage />);
 
     expect(
-      await screen.findByRole('button', { name: 'Jupiler 25 cl bouteille' }),
+      await screen.findByRole('button', { name: 'Modifier Jupiler 25 cl' }),
     ).toBeInTheDocument();
     expect(screen.queryByText('Duvel 33 cl')).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Tous' })).not.toBeInTheDocument();
@@ -101,6 +101,31 @@ describe('Catalogue page', () => {
     expect(fetchMock).toHaveBeenCalledWith(
       `/api/management/products/${duvel.id}/activation`,
       expect.objectContaining({ method: 'PUT' }),
+    );
+  });
+
+  it('keeps deactivation out of the product list', async () => {
+    stubCatalogueApi([jupiler]);
+    renderWithQueryClient(<CataloguePage />);
+
+    await screen.findByRole('button', { name: 'Modifier Jupiler 25 cl' });
+
+    expect(screen.queryByRole('button', { name: /Désactiver/ })).not.toBeInTheDocument();
+  });
+
+  it('deactivates a product from its panel, then closes the panel', async () => {
+    const fetchMock = stubCatalogueApi([jupiler]);
+    renderWithQueryClient(<CataloguePage />);
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Modifier Jupiler 25 cl' }));
+    await userEvent.click(await screen.findByRole('button', { name: 'Désactiver ce produit' }));
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      `/api/management/products/${jupiler.id}/activation`,
+      expect.objectContaining({ method: 'DELETE' }),
+    );
+    await waitFor(() =>
+      expect(screen.queryByText("Conditionnements d'achat")).not.toBeInTheDocument(),
     );
   });
 

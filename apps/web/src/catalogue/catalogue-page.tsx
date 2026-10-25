@@ -7,6 +7,7 @@ import { Badge } from '../ui/badge.tsx';
 import { Button } from '../ui/button.tsx';
 import { Card } from '../ui/card.tsx';
 import { classNames } from '../ui/class-names.ts';
+import { EditButton } from '../ui/edit-button.tsx';
 import { PageHeader } from '../ui/page-header.tsx';
 import { SearchCombobox } from '../ui/search-combobox.tsx';
 import { useMediaQuery } from '../ui/use-media-query.ts';
@@ -50,8 +51,14 @@ export function CataloguePage() {
 
   const activeProducts = products.data.filter((product) => product.isActive);
   const inactiveProducts = products.data.filter((product) => !product.isActive);
-  const pendingProductId = activation.isPending ? activation.variables.productId : null;
   const selectedProduct = activeProducts.find((product) => product.id === selectedProductId);
+  const deactivate = (product: CatalogueProduct) =>
+    activation.mutate(
+      { productId: product.id, activate: false },
+      { onSuccess: () => setSelectedProductId(null) },
+    );
+  const isDeactivating = activation.isPending && !activation.variables.activate;
+
   const activate = (productId: string) =>
     activation.mutate(
       { productId, activate: true },
@@ -116,23 +123,24 @@ export function CataloguePage() {
               key={category}
               title={categoryLabels[category]}
               products={activeProducts.filter((product) => product.category === category)}
-              pendingProductId={pendingProductId}
-              isLocked={activation.isPending}
               selectedProductId={selectedProductId}
               showsPanelInline={!isWide}
+              isDeactivating={isDeactivating}
               onSelect={(product) =>
                 setSelectedProductId(product.id === selectedProductId ? null : product.id)
               }
-              onDeactivate={(product) =>
-                activation.mutate({ productId: product.id, activate: false })
-              }
+              onDeactivate={deactivate}
             />
           ))}
           <StocklessSaleItems />
         </div>
         {isWide && selectedProduct && (
           <Card className="sticky top-6">
-            <ProductPanel product={selectedProduct} />
+            <ProductPanel
+              product={selectedProduct}
+              isDeactivating={isDeactivating}
+              onDeactivate={() => deactivate(selectedProduct)}
+            />
           </Card>
         )}
       </div>
@@ -143,10 +151,9 @@ export function CataloguePage() {
 interface CategorySectionProps {
   title: string;
   products: CatalogueProduct[];
-  pendingProductId: string | null;
-  isLocked: boolean;
   selectedProductId: string | null;
   showsPanelInline: boolean;
+  isDeactivating: boolean;
   onSelect: (product: CatalogueProduct) => void;
   onDeactivate: (product: CatalogueProduct) => void;
 }
@@ -154,10 +161,9 @@ interface CategorySectionProps {
 function CategorySection({
   title,
   products,
-  pendingProductId,
-  isLocked,
   selectedProductId,
   showsPanelInline,
+  isDeactivating,
   onSelect,
   onDeactivate,
 }: CategorySectionProps) {
@@ -179,34 +185,30 @@ function CategorySection({
                   isSelected && 'bg-accent-soft',
                 )}
               >
-                <button
-                  type="button"
-                  aria-expanded={isSelected}
-                  onClick={() => onSelect(product)}
-                  className="min-w-0 flex-1 basis-40 text-left"
-                >
-                  <span className="block font-semibold break-words">{product.name}</span>{' '}
-                  <span className="block text-sm text-ink-muted">{product.stockUnit}</span>
-                </button>
-                <div className="ml-auto flex items-center gap-3">
-                  {product.isShared ? (
-                    <Badge>commun</Badge>
-                  ) : (
-                    <Badge tone="accent">propre à l'association</Badge>
-                  )}
-                  <Button
-                    variant="secondary"
-                    disabled={isLocked}
-                    isPending={product.id === pendingProductId}
-                    aria-label={`Désactiver ${product.name}`}
-                    onClick={() => onDeactivate(product)}
-                  >
-                    Désactiver
-                  </Button>
+                <div className="min-w-0 flex-1 basis-40">
+                  <p className="font-semibold break-words">{product.name}</p>
+                  <p className="flex flex-wrap items-center gap-2 text-sm text-ink-muted">
+                    {product.stockUnit}
+                    {product.isShared ? (
+                      <Badge>commun</Badge>
+                    ) : (
+                      <Badge tone="accent">propre à l'association</Badge>
+                    )}
+                  </p>
                 </div>
+                <EditButton
+                  itemName={product.name}
+                  aria-expanded={isSelected}
+                  className="ml-auto"
+                  onClick={() => onSelect(product)}
+                />
                 {isSelected && showsPanelInline && (
                   <div className="-mx-4 basis-full border-t border-line">
-                    <ProductPanel product={product} />
+                    <ProductPanel
+                      product={product}
+                      isDeactivating={isDeactivating}
+                      onDeactivate={() => onDeactivate(product)}
+                    />
                   </div>
                 )}
               </li>
