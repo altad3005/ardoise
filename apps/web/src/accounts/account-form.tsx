@@ -34,9 +34,10 @@ const hasMovementsMessage =
 interface AccountFormProps {
   account?: TreasuryAccount;
   onDone: () => void;
+  onCancel?: () => void;
 }
 
-export function AccountForm({ account, onDone }: AccountFormProps) {
+export function AccountForm({ account, onDone, onCancel }: AccountFormProps) {
   const [type, setType] = useState<AccountType>(account?.type ?? 'CASH');
   const [name, setName] = useState(account?.name ?? '');
   const [openingBalance, setOpeningBalance] = useState(
@@ -51,10 +52,6 @@ export function AccountForm({ account, onDone }: AccountFormProps) {
         : createAccount(newAccount),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: accountsQueryKey });
-      if (!account) {
-        setName('');
-        setOpeningBalance('');
-      }
       onDone();
     },
   });
@@ -132,8 +129,8 @@ export function AccountForm({ account, onDone }: AccountFormProps) {
       />
       {isUnexpectedError && <Alert>Une erreur est survenue, réessayez plus tard</Alert>}
       <div className="flex justify-end gap-2">
-        {account && (
-          <Button variant="secondary" onClick={onDone}>
+        {onCancel && (
+          <Button variant="secondary" onClick={onCancel}>
             Annuler
           </Button>
         )}

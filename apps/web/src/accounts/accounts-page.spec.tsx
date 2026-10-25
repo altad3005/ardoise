@@ -39,7 +39,21 @@ describe('AccountsPage', () => {
     expect(within(camp).getByText('-45,60 €')).toBeInTheDocument();
   });
 
-  it('shows the empty state', async () => {
+  it('keeps the creation form closed until "Nouveau compte" is clicked', async () => {
+    stubFetch(() => jsonResponse([cashRegister]));
+    renderWithQueryClient(<AccountsPage />);
+    const user = userEvent.setup();
+
+    await screen.findByRole('article', { name: 'Caisse du bar' });
+    expect(screen.queryByLabelText('Nom')).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Nouveau compte' }));
+
+    expect(screen.getByLabelText('Nom')).toHaveValue('');
+    await user.click(screen.getByRole('button', { name: 'Annuler' }));
+    expect(screen.queryByLabelText('Nom')).not.toBeInTheDocument();
+  });
+
+  it('opens the creation form right away when there is no account', async () => {
     stubFetch(() => jsonResponse([]));
     renderWithQueryClient(<AccountsPage />);
 
@@ -48,19 +62,22 @@ describe('AccountsPage', () => {
         'Aucun compte. Déclare au moins une caisse pour pouvoir ouvrir une soirée.',
       ),
     ).toBeInTheDocument();
+    expect(screen.getByLabelText('Nom')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Annuler' })).not.toBeInTheDocument();
   });
 
-  it('fills the form when editing an account', async () => {
-    stubFetch(() => jsonResponse([cashRegister]));
+  it('opens the edit form of an account from its edit button', async () => {
+    stubFetch(() => jsonResponse([cashRegister, campAccount]));
     renderWithQueryClient(<AccountsPage />);
     const user = userEvent.setup();
 
-    const cash = await screen.findByRole('article', { name: 'Caisse du bar' });
-    await user.click(within(cash).getByRole('button', { name: 'Modifier' }));
+    const editButton = await screen.findByRole('button', { name: 'Modifier Caisse du bar' });
+    await user.click(editButton);
 
-    expect(screen.getByRole('heading', { name: 'Modifier Caisse du bar' })).toBeInTheDocument();
+    expect(editButton).toHaveAttribute('aria-expanded', 'true');
     expect(screen.getByLabelText('Nom')).toHaveValue('Caisse du bar');
     await user.click(screen.getByRole('button', { name: 'Annuler' }));
-    expect(screen.getByRole('heading', { name: 'Nouveau compte' })).toBeInTheDocument();
+    expect(editButton).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByLabelText('Nom')).not.toBeInTheDocument();
   });
 });
