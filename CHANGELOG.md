@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.12.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.11.0...ardoise-v0.12.0) (2026-10-25)
+
+
+### Features
+
+* **management:** add treasury account use cases ([ed01c77](https://github.com/altad3005/ardoise/commit/ed01c77299cbe3976e939bbaeb60c5592c50bb87))
+* **management:** expose treasury accounts over HTTP ([52f541d](https://github.com/altad3005/ardoise/commit/52f541debaf4b75639099c20f748a2f1506f7210))
+* **types:** add treasury account schemas ([5861a74](https://github.com/altad3005/ardoise/commit/5861a7429384036cc77f57058f48ddde27e2aef9))
+* **web:** declare and correct treasury accounts ([c372d4a](https://github.com/altad3005/ardoise/commit/c372d4a05e65ce2847bb4729a5a7c808a1f36731))
+* **web:** edit catalogue products from an edit button and deactivate them from their panel ([748dedf](https://github.com/altad3005/ardoise/commit/748dedf32bf9afba377ead2bf9c9654be3038a6d))
+* **web:** open account forms from a header button and a shared edit button ([abb4850](https://github.com/altad3005/ardoise/commit/abb4850527d2e249fc8591ee63e97f0c5ab13811))
+* **web:** parse signed amounts and add accounts API client ([1554d8e](https://github.com/altad3005/ardoise/commit/1554d8e3b586e557edaf6bab54aa2399bba4ffee))
+
+
+### Bug Fixes
+
+* **management:** answer 409 when a concurrent request takes the account name ([8fd8ef1](https://github.com/altad3005/ardoise/commit/8fd8ef1016bf3182de924e75bfcfb14fed148489))
+
 ## [0.11.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.10.0...ardoise-v0.11.0) (2026-10-24)
 
 
