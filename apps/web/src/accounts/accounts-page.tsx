@@ -27,14 +27,17 @@ export function AccountsPage() {
   };
   const stopEditing = () => setEditedAccountId(null);
 
+  const hasAccounts = (accounts.data?.length ?? 0) > 0;
   const header = (
     <PageHeader
       title="Comptes"
       subtitle="Les comptes bancaires et les caisses en espèces de l'association."
       actions={
-        <Button onClick={startCreating} disabled={isCreating}>
-          Nouveau compte
-        </Button>
+        hasAccounts && (
+          <Button onClick={startCreating} disabled={isCreating}>
+            Nouveau compte
+          </Button>
+        )
       }
     />
   );
@@ -56,22 +59,21 @@ export function AccountsPage() {
     );
   }
 
-  const isEmpty = accounts.data.length === 0;
   const editedAccount = accounts.data.find((account) => account.id === editedAccountId);
 
   return (
     <section>
       {header}
-      {(isCreating || isEmpty) && (
+      {(isCreating || !hasAccounts) && (
         <Card className="mb-6 p-4">
           <h2 className="mb-4 font-display text-xl font-bold">Nouveau compte</h2>
           <AccountForm
             onDone={() => setIsCreating(false)}
-            onCancel={isEmpty ? undefined : () => setIsCreating(false)}
+            onCancel={hasAccounts ? () => setIsCreating(false) : undefined}
           />
         </Card>
       )}
-      {isEmpty ? (
+      {!hasAccounts ? (
         <p className="text-ink-muted">
           Aucun compte. Déclare au moins une caisse pour pouvoir ouvrir une soirée.
         </p>

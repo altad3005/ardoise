@@ -64,6 +64,7 @@ describe('AccountsPage', () => {
     ).toBeInTheDocument();
     expect(screen.getByLabelText('Nom')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Annuler' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Nouveau compte' })).not.toBeInTheDocument();
   });
 
   it('opens the edit form of an account from its edit button', async () => {
