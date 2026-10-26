@@ -39,12 +39,12 @@ describe('Catalogue page', () => {
     await userEvent.click(productButton);
 
     expect(productButton).toHaveAttribute('aria-expanded', 'true');
-    expect(await screen.findByText("Conditionnements d'achat")).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Achat' })).toBeInTheDocument();
 
     await userEvent.click(productButton);
 
     expect(productButton).toHaveAttribute('aria-expanded', 'false');
-    expect(screen.queryByText("Conditionnements d'achat")).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Achat' })).not.toBeInTheDocument();
   });
 
   it('opens the stockless item form above the products', async () => {
@@ -125,7 +125,7 @@ describe('Catalogue page', () => {
       expect.objectContaining({ method: 'DELETE' }),
     );
     await waitFor(() =>
-      expect(screen.queryByText("Conditionnements d'achat")).not.toBeInTheDocument(),
+      expect(screen.queryByRole('heading', { name: 'Achat' })).not.toBeInTheDocument(),
     );
   });
 

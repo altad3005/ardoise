@@ -1,9 +1,11 @@
 import { newSaleItemSchema, type CatalogueProduct, type SaleItemChanges } from '@ardoise/types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { GlassWater } from 'lucide-react';
 import { useState } from 'react';
 import { createSaleItem, fetchProductSaleItems, updateSaleItem } from '../api/sale-items.ts';
 import { Alert } from '../ui/alert.tsx';
 import { Button } from '../ui/button.tsx';
+import { PanelSectionHeading } from './panel-section-heading.tsx';
 import { SaleItemCard } from './sale-item-card.tsx';
 import { SaleItemForm } from './sale-item-form.tsx';
 import { productSaleItemsQueryKey, saleItemsQueryKey } from './sale-item-query-keys.ts';
@@ -27,14 +29,18 @@ export function ProductSaleItems({ product }: ProductSaleItemsProps) {
     refreshAfter(createSaleItem(product.id, newSaleItemSchema.parse(changes)));
 
   return (
-    <section aria-labelledby={headingId} className="grid gap-3">
-      <h3 id={headingId} className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
-        Articles de vente
-      </h3>
+    <section aria-labelledby={headingId} className="grid gap-3 border-t border-line pt-4">
+      <PanelSectionHeading
+        id={headingId}
+        icon={GlassWater}
+        tone="accent"
+        title="Vente"
+        description="Ce que vous servez au bar, et à quel prix."
+      />
       {saleItems.isPending && <p>Chargement…</p>}
       {saleItems.isError && <Alert>Une erreur est survenue, réessayez plus tard</Alert>}
       {saleItems.isSuccess && saleItems.data.length > 0 && (
-        <ul aria-labelledby={headingId} className="grid gap-2">
+        <ul aria-label="Articles de vente" className="grid gap-2">
           {saleItems.data.map((saleItem) => (
             <SaleItemCard
               key={saleItem.id}
@@ -59,7 +65,7 @@ export function ProductSaleItems({ product }: ProductSaleItemsProps) {
         ) : (
           <div>
             <Button variant="secondary" onClick={() => setIsCreating(true)}>
-              + Nouvel article pour ce produit
+              + Article de vente
             </Button>
           </div>
         ))}

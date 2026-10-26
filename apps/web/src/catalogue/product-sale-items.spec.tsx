@@ -41,6 +41,14 @@ afterEach(() => {
 });
 
 describe('ProductSaleItems', () => {
+  it('explains what the sale section is for', async () => {
+    stubFetch(() => jsonResponse([]));
+    renderWithQueryClient(<ProductSaleItems product={ricard} />);
+
+    expect(await screen.findByRole('heading', { name: 'Vente' })).toBeInTheDocument();
+    expect(screen.getByText('Ce que vous servez au bar, et à quel prix.')).toBeInTheDocument();
+  });
+
   it('lists the items with their consumption and price', async () => {
     stubFetch(() => jsonResponse([glass, bottle]));
     renderWithQueryClient(<ProductSaleItems product={ricard} />);
@@ -85,9 +93,7 @@ describe('ProductSaleItems', () => {
     );
     renderWithQueryClient(<ProductSaleItems product={ricard} />);
 
-    await userEvent.click(
-      await screen.findByRole('button', { name: '+ Nouvel article pour ce produit' }),
-    );
+    await userEvent.click(await screen.findByRole('button', { name: '+ Article de vente' }));
     await userEvent.type(screen.getByLabelText('Nom'), 'Verre de pastis');
     await userEvent.type(screen.getByLabelText('Quantité consommée'), '1/20');
     await userEvent.type(screen.getByLabelText('Prix de base'), '2');
@@ -115,8 +121,6 @@ describe('ProductSaleItems', () => {
     expect(
       await screen.findByText('Activez le produit pour lui créer des articles'),
     ).toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: '+ Nouvel article pour ce produit' }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '+ Article de vente' })).not.toBeInTheDocument();
   });
 });

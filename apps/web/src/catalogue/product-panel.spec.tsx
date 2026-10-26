@@ -38,14 +38,22 @@ afterEach(() => {
 });
 
 describe('ProductPanel', () => {
-  it('lists the packagings with their unit count', async () => {
+  it('explains what the purchase section is for', async () => {
+    stubFetch(() => jsonResponse([]));
+    renderPanel();
+
+    expect(await screen.findByRole('heading', { name: 'Achat' })).toBeInTheDocument();
+    expect(screen.getByText("Comment vous l'achetez au magasin.")).toBeInTheDocument();
+  });
+
+  it('lists the packagings as a number of stock units', async () => {
     stubFetch((url) => jsonResponse(url.endsWith('/packagings') ? [ownPack, sharedCrate] : []));
     renderPanel();
 
     const packagings = await screen.findByRole('list', { name: "Conditionnements d'achat" });
     const [ownItem, sharedItem] = within(packagings).getAllByRole('listitem');
-    expect(ownItem).toHaveTextContent('pack de 12 — 12 unités');
-    expect(sharedItem).toHaveTextContent('bac de 24 — 24 unitéscommun');
+    expect(ownItem).toHaveTextContent('pack de 12 = 12 bouteilles');
+    expect(sharedItem).toHaveTextContent('bac de 24 = 24 bouteillescommun');
   });
 
   it('only lets an own packaging be deleted', async () => {
@@ -78,7 +86,7 @@ describe('ProductPanel', () => {
     stubFetch(() => jsonResponse([]));
     renderPanel();
 
-    await userEvent.click(await screen.findByRole('button', { name: '+ Conditionnement' }));
+    await userEvent.click(await screen.findByRole('button', { name: "+ Conditionnement d'achat" }));
 
     expect(screen.getByLabelText('Libellé')).toBeInTheDocument();
   });

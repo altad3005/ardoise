@@ -1,13 +1,15 @@
 import type { CatalogueProduct, PurchasePackaging } from '@ardoise/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 import { deletePackaging, fetchPackagings } from '../api/packagings.ts';
-import { formatQuantity } from '../forms/number-format.ts';
+import { formatStockQuantity } from '../forms/number-format.ts';
 import { Alert } from '../ui/alert.tsx';
 import { Badge } from '../ui/badge.tsx';
 import { Button } from '../ui/button.tsx';
 import { NewPackagingForm } from './new-packaging-form.tsx';
 import { packagingsQueryKey } from './packaging-query-key.ts';
+import { PanelSectionHeading } from './panel-section-heading.tsx';
 import { ProductSaleItems } from './product-sale-items.tsx';
 
 const errorMessage = 'Une erreur est survenue, réessayez plus tard';
@@ -36,23 +38,24 @@ export function ProductPanel({ product, isDeactivating, onDeactivate }: ProductP
         <p className="text-sm text-ink-muted">Unité de stock : {product.stockUnit}</p>
       </div>
       <section aria-labelledby={`packagings-${product.id}`} className="grid gap-3">
-        <h3
+        <PanelSectionHeading
           id={`packagings-${product.id}`}
-          className="text-xs font-semibold tracking-wide text-ink-muted uppercase"
-        >
-          Conditionnements d'achat
-        </h3>
+          icon={ShoppingCart}
+          title="Achat"
+          description="Comment vous l'achetez au magasin."
+        />
         {packagings.isPending && <p>Chargement…</p>}
         {packagings.isError && <Alert>{errorMessage}</Alert>}
         {packagings.isSuccess && packagings.data.length === 0 && (
           <p className="text-sm text-ink-muted">Aucun conditionnement : achat à l’unité</p>
         )}
         {packagings.isSuccess && packagings.data.length > 0 && (
-          <ul aria-labelledby={`packagings-${product.id}`} className="flex flex-wrap gap-2">
+          <ul aria-label="Conditionnements d'achat" className="flex flex-wrap gap-2">
             {packagings.data.map((packaging) => (
               <PackagingChip
                 key={packaging.id}
                 packaging={packaging}
+                stockUnit={product.stockUnit}
                 isLocked={deletion.isPending}
                 onDelete={() => deletion.mutate(packaging.id)}
               />
@@ -65,7 +68,7 @@ export function ProductPanel({ product, isDeactivating, onDeactivate }: ProductP
         ) : (
           <div>
             <Button variant="secondary" onClick={() => setIsAdding(true)}>
-              + Conditionnement
+              + Conditionnement d'achat
             </Button>
           </div>
         )}
@@ -82,16 +85,16 @@ export function ProductPanel({ product, isDeactivating, onDeactivate }: ProductP
 
 interface PackagingChipProps {
   packaging: PurchasePackaging;
+  stockUnit: string;
   isLocked: boolean;
   onDelete: () => void;
 }
 
-function PackagingChip({ packaging, isLocked, onDelete }: PackagingChipProps) {
-  const unitWord = packaging.unitCount > 1 ? 'unités' : 'unité';
+function PackagingChip({ packaging, stockUnit, isLocked, onDelete }: PackagingChipProps) {
   return (
     <li className="flex items-center gap-2 rounded-md bg-surface-raised py-1 pr-1 pl-3 text-sm">
       <span>
-        {packaging.label} — {formatQuantity(packaging.unitCount)} {unitWord}
+        {packaging.label} = {formatStockQuantity(packaging.unitCount, stockUnit)}
       </span>
       {packaging.isShared ? (
         <Badge>commun</Badge>
