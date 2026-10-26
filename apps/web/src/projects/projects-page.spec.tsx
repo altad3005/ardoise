@@ -117,6 +117,8 @@ describe('ProjectsPage', () => {
         body: JSON.stringify({ name: 'Bar et soirées' }),
       }),
     );
+    await user.click(screen.getByRole('button', { name: 'Modifier Brunch #1' }));
+    expect(screen.getByRole('option', { name: 'Bar et soirées' })).toBeInTheDocument();
   });
 
   it("opens a project's edit form from its edit button", async () => {
