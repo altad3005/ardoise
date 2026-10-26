@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.12.0...ardoise-v0.13.0) (2026-10-26)
+
+
+### Features
+
+* **web:** tell purchase and sale apart in the product panel ([2e9ad2e](https://github.com/altad3005/ardoise/commit/2e9ad2e2dc32c4c6149e16c8e3b614859b02854c))
+
 ## [0.12.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.11.0...ardoise-v0.12.0) (2026-10-25)
 
 
