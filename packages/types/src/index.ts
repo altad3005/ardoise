@@ -9,3 +9,4 @@ export * from './bar/sale-item.js';
 export * from './bar/menu.js';
 export * from './bar/stock-quantity.js';
 export * from './treasury/account.js';
+export * from './treasury/project.js';
