@@ -8,3 +8,8 @@ export function formatPrice(cents: number): string {
 export function formatQuantity(quantity: number): string {
   return quantityFormat.format(quantity);
 }
+
+export function formatStockQuantity(quantity: number, stockUnit: string): string {
+  const isPlural = quantity >= 2 && !/[sx]$/.test(stockUnit);
+  return `${formatQuantity(quantity)} ${isPlural ? `${stockUnit}s` : stockUnit}`;
+}
