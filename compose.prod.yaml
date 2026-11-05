@@ -53,10 +53,6 @@ services:
     image: ${IMAGE_REGISTRY:-ghcr.io/altad3005}/ardoise-web:${ARDOISE_VERSION:-latest}
     restart: unless-stopped
     pull_policy: ${PULL_POLICY:-always}
-    environment:
-      SITE_ADDRESS: ${SITE_ADDRESS:-:80}
-    volumes:
-      - caddy-data:/data
     expose:
       - '80'
     depends_on:
@@ -73,4 +69,3 @@ configs:
 
 volumes:
   postgres-data:
-  caddy-data:
