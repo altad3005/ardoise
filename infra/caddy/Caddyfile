@@ -4,7 +4,7 @@
 	}
 }
 
-{$SITE_ADDRESS::80} {
+:80 {
 	encode zstd gzip
 
 	@internal path /api/identity/internal/* /api/management/internal/*

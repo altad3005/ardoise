@@ -98,22 +98,13 @@ docker compose up -d --build                  # http://localhost:8080
 
 Chaque release publie trois images sur GitHub Container Registry (`ardoise-identity`, `ardoise-management`, `ardoise-web`). La production les exécute avec `compose.prod.yaml`, sans rien reconstruire. Toute la configuration passe par des variables d'environnement : voir [`infra/production.env.example`](infra/production.env.example).
 
-**Derrière un reverse proxy** (Dokploy, Coolify, Traefik, Nginx…) : le proxy gère le domaine et le HTTPS, et transmet au service `web` sur le port 80.
+La production tourne derrière un reverse proxy (Dokploy, Coolify, Traefik, Nginx…) : le proxy gère le domaine et le HTTPS, et transmet au service `web` sur le port 80.
 
 ```bash
 docker compose -f compose.prod.yaml up -d
 ```
 
-**Seul sur un serveur** : Caddy publie les ports 80 et 443 et obtient lui-même le certificat HTTPS pour `SITE_ADDRESS`.
-
-```bash
-docker compose -f compose.prod.yaml -f compose.prod.standalone.yaml up -d
-```
-
-**Adresse IP des clients** : la limitation du nombre de requêtes (inscription…) compte par adresse IP. Caddy fait confiance à l'en-tête `X-Forwarded-For` venant d'une adresse privée, c'est-à-dire du reverse proxy. Il faut donc que les services voient la vraie adresse du client :
-
-- derrière un reverse proxy, celui-ci ne doit pas faire confiance à un `X-Forwarded-For` envoyé par le client (comportement par défaut de Traefik) ; s'il est lui-même derrière un CDN (Cloudflare…), déclarer les adresses du CDN comme proxys de confiance ;
-- seul sur un serveur, Docker doit transmettre l'adresse d'origine des connexions, ce qui n'est pas le cas en mode *rootless* (Docker ou Podman) : le client paraîtrait venir d'une adresse privée et pourrait falsifier son adresse.
+**Adresse IP des clients** : la limitation du nombre de requêtes (inscription…) compte par adresse IP. Caddy fait confiance à l'en-tête `X-Forwarded-For` venant d'une adresse privée, c'est-à-dire du reverse proxy. Celui-ci ne doit donc pas faire confiance à un `X-Forwarded-For` envoyé par le client (comportement par défaut de Traefik) ; s'il est lui-même derrière un CDN (Cloudflare…), déclarer les adresses du CDN comme proxys de confiance.
 
 **Déploiement automatique** : si le secret GitHub `DEPLOY_WEBHOOK_URL` est défini, le workflow de release l'appelle après avoir publié les images. La plupart des plateformes (Dokploy, Coolify, Portainer) fournissent une telle URL.
 
