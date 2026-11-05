@@ -95,3 +95,28 @@ model Account {
   @@map("accounts")
   @@schema("treasury")
 }
+
+model ProjectCategory {
+  id            String    @id @db.Uuid
+  associationId String    @map("association_id") @db.Uuid
+  name          String
+  projects      Project[]
+
+  @@unique([associationId, name])
+  @@map("project_categories")
+  @@schema("treasury")
+}
+
+model Project {
+  id            String          @id @db.Uuid
+  associationId String          @map("association_id") @db.Uuid
+  categoryId    String          @map("category_id") @db.Uuid
+  name          String
+  isActive      Boolean         @default(true) @map("is_active")
+  category      ProjectCategory @relation(fields: [categoryId], references: [id])
+
+  @@unique([associationId, name])
+  @@index([categoryId])
+  @@map("projects")
+  @@schema("treasury")
+}
