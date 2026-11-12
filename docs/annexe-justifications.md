@@ -1,8 +1,8 @@
 # Ardoise — Annexe : décisions et justifications
 
-> Complément au cahier des charges (`cahier-des-charges.md`, dans le même dossier `docs/` du dépôt). Le cahier dit **ce que fait** l'application et **comment elle est construite** ; cette annexe dit **pourquoi** ces choix ont été faits. Elle sert de support à la défense orale.
+> Complément au cahier des charges (`cahier-des-charges.md`) et au plan d'implémentation (`plan-implementation.md`), dans le même dossier `docs/` du dépôt. Le cahier dit **ce que fait** l'application et **comment elle est construite**, le plan **avec quels outils** et **dans quel ordre** ; cette annexe dit **pourquoi** ces choix ont été faits. Elle sert de support à la défense orale.
 >
-> Dernière vérification des versions et des compatibilités : **1er octobre 2026** (relevé des paquets et de leurs dépendances de pair sur le registre npm ; tableau dans le cahier, 10.6). Décision sur la place de l'ardoise : **27 septembre 2026** (§3).
+> Dernière vérification des versions et des compatibilités : **1er octobre 2026** (relevé des paquets et de leurs dépendances de pair sur le registre npm ; tableau dans le plan d'implémentation, 1.6). Décision sur la place de l'ardoise : **27 septembre 2026** (§3).
 
 ## 1. NestJS plutôt que Spring Boot
 
