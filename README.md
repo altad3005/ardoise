@@ -45,7 +45,7 @@ Navigateur (React) ──HTTPS──► Caddy ──► identity    [BD identit�
 | Qualité | Vitest · Supertest · oxlint · dependency-cruiser |
 | Livraison | pnpm workspaces · Docker · GitHub Actions · release-please · Caddy |
 
-Les versions exactes et les pièges de compatibilité (TypeScript 7, Prisma 8) sont détaillés dans le [cahier des charges, section 10.6](docs/cahier-des-charges.md#106-versions-retenues-et-pièges-de-compatibilité).
+Les versions exactes et les pièges de compatibilité (TypeScript 7, Prisma 8) sont détaillés dans le [plan d'implémentation, section 1.6](docs/plan-implementation.md#16-versions-retenues-et-pièges-de-compatibilité).
 
 ## Structure du dépôt
 
@@ -114,7 +114,7 @@ Si les images sont privées, le serveur doit d'abord s'authentifier auprès de `
 
 - [Cahier des charges](docs/cahier-des-charges.md) : règles de gestion, user stories, modèle de données, choix techniques.
 - [Annexe des justifications](docs/annexe-justifications.md) : pourquoi NestJS, deux services, l'ardoise dans le module Bar, Prisma 7 et le multi-associations.
-- Le code est entièrement en anglais ; la correspondance avec les termes du cahier des charges est dans sa [section 10.7](docs/cahier-des-charges.md#107-nommage-dans-le-code).
+- Le code est entièrement en anglais ; la correspondance avec les termes du cahier des charges est dans la [section 1.7 du plan d'implémentation](docs/plan-implementation.md#17-nommage-dans-le-code).
 - Documentation des API : OpenAPI, générée par chaque service.
 
 ## Contexte
