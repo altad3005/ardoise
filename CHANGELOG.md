@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.13.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.12.0...ardoise-v0.13.0) (2026-11-12)
+
+
+### Features
+
+* **management:** add project category and project use cases ([c2e38e7](https://github.com/altad3005/ardoise/commit/c2e38e7534ef962f9618b0eb48cc53d8f2cbb1c2))
+* **management:** expose project categories and projects over HTTP ([d7f92c3](https://github.com/altad3005/ardoise/commit/d7f92c32e485dda442a91cf63ee91e06f4d656ce))
+* **types:** add project category and project schemas ([df3bfcf](https://github.com/altad3005/ardoise/commit/df3bfcfb8b9943fd2e2ece62408f1224bc61df29))
+* **web:** manage project categories and projects ([a8c5e43](https://github.com/altad3005/ardoise/commit/a8c5e436dbe470f13c5cbdf42a2bff64c5215929))
+* **web:** tell purchase and sale apart in the product panel ([2e9ad2e](https://github.com/altad3005/ardoise/commit/2e9ad2e2dc32c4c6149e16c8e3b614859b02854c))
+
+
+### Bug Fixes
+
+* **web:** hide the new account button while there is no account ([5d4c1ac](https://github.com/altad3005/ardoise/commit/5d4c1ac4a6f4a59c6944dc2cbdcfc39c7c14876e))
+
 ## [0.12.0](https://github.com/altad3005/ardoise/compare/ardoise-v0.11.0...ardoise-v0.12.0) (2026-10-25)
 
 
