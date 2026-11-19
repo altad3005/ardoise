@@ -66,6 +66,9 @@ infra/
   production.env.example  variables de production
 docs/
   cahier-des-charges.md
+  cahier-des-charges-simplifie.md
+  plan-implementation.md
+  plan-implementation-simplifie.md
   annexe-justifications.md
 ```
 
@@ -112,7 +115,8 @@ Si les images sont privées, le serveur doit d'abord s'authentifier auprès de `
 
 ## Documentation
 
-- [Cahier des charges](docs/cahier-des-charges.md) : règles de gestion, user stories, modèle de données, choix techniques.
+- [Cahier des charges](docs/cahier-des-charges.md) : règles de gestion, user stories, modèle de données ([version simplifiée](docs/cahier-des-charges-simplifie.md)).
+- [Plan d'implémentation](docs/plan-implementation.md) : choix techniques, versions, planning et risques ([version simplifiée](docs/plan-implementation-simplifie.md)).
 - [Annexe des justifications](docs/annexe-justifications.md) : pourquoi NestJS, deux services, l'ardoise dans le module Bar, Prisma 7 et le multi-associations.
 - Le code est entièrement en anglais ; la correspondance avec les termes du cahier des charges est dans la [section 1.7 du plan d'implémentation](docs/plan-implementation.md#17-nommage-dans-le-code).
 - Documentation des API : OpenAPI, générée par chaque service.
