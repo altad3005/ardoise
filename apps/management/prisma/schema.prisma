@@ -84,12 +84,13 @@ enum AccountType {
 }
 
 model Account {
-  id                  String      @id @db.Uuid
-  associationId       String      @map("association_id") @db.Uuid
+  id                  String             @id @db.Uuid
+  associationId       String             @map("association_id") @db.Uuid
   name                String
   type                AccountType
-  openingBalanceCents Int         @map("opening_balance_cents")
-  isActive            Boolean     @default(true) @map("is_active")
+  openingBalanceCents Int                @map("opening_balance_cents")
+  isActive            Boolean            @default(true) @map("is_active")
+  settingsAsCash      TreasurySettings[]
 
   @@unique([associationId, name])
   @@map("accounts")
@@ -108,15 +109,30 @@ model ProjectCategory {
 }
 
 model Project {
-  id            String          @id @db.Uuid
-  associationId String          @map("association_id") @db.Uuid
-  categoryId    String          @map("category_id") @db.Uuid
-  name          String
-  isActive      Boolean         @default(true) @map("is_active")
-  category      ProjectCategory @relation(fields: [categoryId], references: [id])
+  id                String             @id @db.Uuid
+  associationId     String             @map("association_id") @db.Uuid
+  categoryId        String             @map("category_id") @db.Uuid
+  name              String
+  isActive          Boolean            @default(true) @map("is_active")
+  category          ProjectCategory    @relation(fields: [categoryId], references: [id])
+  settingsAsDefault TreasurySettings[] @relation("DefaultProject")
+  settingsAsStock   TreasurySettings[] @relation("StockProject")
 
   @@unique([associationId, name])
   @@index([categoryId])
   @@map("projects")
+  @@schema("treasury")
+}
+
+model TreasurySettings {
+  associationId        String   @id @map("association_id") @db.Uuid
+  defaultProjectId     String?  @map("default_project_id") @db.Uuid
+  stockProjectId       String?  @map("stock_project_id") @db.Uuid
+  defaultCashAccountId String?  @map("default_cash_account_id") @db.Uuid
+  defaultProject       Project? @relation("DefaultProject", fields: [defaultProjectId], references: [id], onDelete: Restrict)
+  stockProject         Project? @relation("StockProject", fields: [stockProjectId], references: [id], onDelete: Restrict)
+  defaultCashAccount   Account? @relation(fields: [defaultCashAccountId], references: [id], onDelete: Restrict)
+
+  @@map("treasury_settings")
   @@schema("treasury")
 }

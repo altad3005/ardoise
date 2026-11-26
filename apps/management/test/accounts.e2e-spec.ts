@@ -42,6 +42,7 @@ describe('Treasury accounts', () => {
   });
 
   beforeEach(async () => {
+    await prisma.treasurySettings.deleteMany();
     await prisma.account.deleteMany();
   });
 
