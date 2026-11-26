@@ -15,6 +15,7 @@ import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppCatalogueRouteImport } from './routes/_app/catalogue'
 import { Route as AppComptesRouteImport } from './routes/_app/comptes'
 import { Route as AppMenuRouteImport } from './routes/_app/menu'
+import { Route as AppParametrageRouteImport } from './routes/_app/parametrage'
 import { Route as AppProjetsRouteImport } from './routes/_app/projets'
 import { Route as PublicRegisterRouteImport } from './routes/_public/register'
 
@@ -46,6 +47,11 @@ const AppMenuRoute = AppMenuRouteImport.update({
   path: '/menu',
   getParentRoute: () => AppRoute,
 } as any)
+const AppParametrageRoute = AppParametrageRouteImport.update({
+  id: '/parametrage',
+  path: '/parametrage',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppProjetsRoute = AppProjetsRouteImport.update({
   id: '/projets',
   path: '/projets',
@@ -62,6 +68,7 @@ export interface FileRoutesByFullPath {
   '/catalogue': typeof AppCatalogueRoute
   '/comptes': typeof AppComptesRoute
   '/menu': typeof AppMenuRoute
+  '/parametrage': typeof AppParametrageRoute
   '/projets': typeof AppProjetsRoute
   '/register': typeof PublicRegisterRoute
 }
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/catalogue': typeof AppCatalogueRoute
   '/comptes': typeof AppComptesRoute
   '/menu': typeof AppMenuRoute
+  '/parametrage': typeof AppParametrageRoute
   '/projets': typeof AppProjetsRoute
   '/register': typeof PublicRegisterRoute
 }
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/_app/catalogue': typeof AppCatalogueRoute
   '/_app/comptes': typeof AppComptesRoute
   '/_app/menu': typeof AppMenuRoute
+  '/_app/parametrage': typeof AppParametrageRoute
   '/_app/projets': typeof AppProjetsRoute
   '/_public/register': typeof PublicRegisterRoute
   '/_app/': typeof AppIndexRoute
@@ -87,9 +96,22 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/catalogue' | '/comptes' | '/menu' | '/projets' | '/register'
+    | '/'
+    | '/catalogue'
+    | '/comptes'
+    | '/menu'
+    | '/parametrage'
+    | '/projets'
+    | '/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/catalogue' | '/comptes' | '/menu' | '/projets' | '/register'
+  to:
+    | '/'
+    | '/catalogue'
+    | '/comptes'
+    | '/menu'
+    | '/parametrage'
+    | '/projets'
+    | '/register'
   id:
     | '__root__'
     | '/_app'
@@ -97,6 +119,7 @@ export interface FileRouteTypes {
     | '/_app/catalogue'
     | '/_app/comptes'
     | '/_app/menu'
+    | '/_app/parametrage'
     | '/_app/projets'
     | '/_public/register'
     | '/_app/'
@@ -151,6 +174,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMenuRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/parametrage': {
+      id: '/_app/parametrage'
+      path: '/parametrage'
+      fullPath: '/parametrage'
+      preLoaderRoute: typeof AppParametrageRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/projets': {
       id: '/_app/projets'
       path: '/projets'
@@ -172,6 +202,7 @@ interface AppRouteChildren {
   AppCatalogueRoute: typeof AppCatalogueRoute
   AppComptesRoute: typeof AppComptesRoute
   AppMenuRoute: typeof AppMenuRoute
+  AppParametrageRoute: typeof AppParametrageRoute
   AppProjetsRoute: typeof AppProjetsRoute
   AppIndexRoute: typeof AppIndexRoute
 }
@@ -180,6 +211,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCatalogueRoute: AppCatalogueRoute,
   AppComptesRoute: AppComptesRoute,
   AppMenuRoute: AppMenuRoute,
+  AppParametrageRoute: AppParametrageRoute,
   AppProjetsRoute: AppProjetsRoute,
   AppIndexRoute: AppIndexRoute,
 }
