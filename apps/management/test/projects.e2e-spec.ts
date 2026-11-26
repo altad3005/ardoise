@@ -53,6 +53,7 @@ describe('Projects and project categories', () => {
   });
 
   beforeEach(async () => {
+    await prisma.treasurySettings.deleteMany();
     await prisma.project.deleteMany();
     await prisma.projectCategory.deleteMany();
   });
