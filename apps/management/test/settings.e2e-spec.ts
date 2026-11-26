@@ -39,8 +39,7 @@ describe('Treasury settings', () => {
   };
   const account = async (name: string, type: 'BANK' | 'CASH') =>
     accountSchema.parse(
-      (await request(server()).post('/accounts').send({ name, type, openingBalanceCents: 0 }))
-        .body,
+      (await request(server()).post('/accounts').send({ name, type, openingBalanceCents: 0 })).body,
     );
 
   const clearTreasury = async () => {
