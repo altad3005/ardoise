@@ -41,7 +41,7 @@ const navigationGroups: NavigationGroup[] = [
     links: [
       { to: '/comptes', label: 'Comptes', icon: Landmark, exact: false },
       { to: '/projets', label: 'Projets', icon: FolderKanban, exact: false },
-      { to: '/parametrage', label: 'Paramétrage', icon: Settings, exact: false },
+      { to: '/parametrage', label: 'Réglages', icon: Settings, exact: false },
     ],
   },
 ];
